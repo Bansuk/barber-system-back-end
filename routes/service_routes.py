@@ -4,14 +4,17 @@ Route module for Service routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.service_schema import ServiceSchema, ServiceViewSchema
-from business.service_business import create_service
+from business.service_business import create_service, delete_service_by_id
 from repositories.service_repository import get_all_services
 from routes.docs.service_doc import (
-    GET_SERVICE_SUMMARY,
+    DELETE_SERVICE_DESCRIPTION,
+    DELETE_SERVICE_SUMMARY,
     GET_SERVICE_DESCRIPTION,
-    POST_SERVICE_SUMMARY,
+    GET_SERVICE_SUMMARY,
     POST_SERVICE_DESCRIPTION,
-    service_responses,
+    POST_SERVICE_SUMMARY,
+    post_service_responses,
+    delete_service_responses
 )
 
 
@@ -23,7 +26,7 @@ service_bp = SmorestBlueprint(
 @service_bp.arguments(ServiceSchema)
 @service_bp.response(201, ServiceViewSchema, description='Serviço cadastrado com sucesso.')
 @service_bp.doc(summary=POST_SERVICE_SUMMARY, description=POST_SERVICE_DESCRIPTION,
-                responses=service_responses)
+                responses=post_service_responses)
 def add_service(service_data):
     """
     Handles the creation of a new service.
@@ -60,3 +63,18 @@ def get_services():
     """
 
     return get_all_services()
+
+
+@service_bp.route('/service/<int:service_id>', methods=['DELETE'])
+@service_bp.response(204)
+@service_bp.doc(summary=DELETE_SERVICE_SUMMARY, description=DELETE_SERVICE_DESCRIPTION, responses=delete_service_responses)
+def remove_service(service_id):
+    """
+    Deletes a service.
+
+    Responses:
+        JSON response:
+        - 204 (No Content): Successfully deleted the service.
+        - 404 (Not Found): service was not found.
+    """
+    return delete_service_by_id(service_id)

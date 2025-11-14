@@ -69,3 +69,24 @@ def get_service_by_name(name: str) -> Optional[Service]:
     """
 
     return db.session.query(Service.name).filter_by(name=name).first()
+
+
+def delete_service(service: Service) -> bool:
+    """
+    Deletes the given service from the database.
+
+    Returns:
+        bool: True if the service was deleted successfully.
+
+    Raises:
+        Exception: If the deletion fails.
+    """
+
+    try:
+        db.session.delete(service)
+        db.session.commit()
+
+        return True
+    except Exception as error:
+        db.session.rollback()
+        raise error
