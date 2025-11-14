@@ -78,3 +78,24 @@ def get_employee_appointment(date: datetime, employee_id: int) -> Optional[Appoi
         Appointment.employee_id == employee_id,
         Appointment.date == date
     ).first()
+
+
+def delete_appointment(appointment: Appointment) -> bool:
+    """
+    Deletes the given appointment from the database.
+
+    Returns:
+        bool: True if the appointment was deleted successfully.
+
+    Raises:
+        Exception: If the deletion fails.
+    """
+
+    try:
+        db.session.delete(appointment)
+        db.session.commit()
+
+        return True
+    except Exception as error:
+        db.session.rollback()
+        raise error

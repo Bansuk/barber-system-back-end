@@ -4,14 +4,17 @@ Route module for Appointment routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.appointment_schema import AppointmentSchema, AppointmentViewSchema
-from business.appointment_business import create_appointment
+from business.appointment_business import create_appointment, delete_appointment_by_id
 from repositories.appointment_repository import get_all_appointments
 from routes.docs.appointment_doc import (
-    GET_APPOINTMENT_SUMMARY,
+    DELETE_APPOINTMENT_DESCRIPTION,
+    DELETE_APPOINTMENT_SUMMARY,
     GET_APPOINTMENT_DESCRIPTION,
-    POST_APPOINTMENT_SUMMARY,
+    GET_APPOINTMENT_SUMMARY,
     POST_APPOINTMENT_DESCRIPTION,
-    appointment_responses,
+    POST_APPOINTMENT_SUMMARY,
+    delete_appointment_responses,
+    post_appointment_responses,
 )
 
 appointment_bp = SmorestBlueprint(
@@ -22,7 +25,7 @@ appointment_bp = SmorestBlueprint(
 @appointment_bp.arguments(AppointmentSchema)
 @appointment_bp.response(201, AppointmentViewSchema, description='Agendamento realizado com sucesso.')
 @appointment_bp.doc(summary=POST_APPOINTMENT_SUMMARY, description=POST_APPOINTMENT_DESCRIPTION,
-                    responses=appointment_responses)
+                    responses=post_appointment_responses)
 def add_appointment(apointment_data):
     """
     Handles the creation of a new appointment.
@@ -60,3 +63,18 @@ def get_appointments():
     """
 
     return get_all_appointments()
+
+
+@appointment_bp.route('/appointment/<int:appointment_id>', methods=['DELETE'])
+@appointment_bp.response(204)
+@appointment_bp.doc(summary=DELETE_APPOINTMENT_SUMMARY, description=DELETE_APPOINTMENT_DESCRIPTION, responses=delete_appointment_responses)
+def remove_appointment(appointment_id):
+    """
+    Deletes a appointment.
+
+    Responses:
+        JSON response:
+        - 204 (No Content): Successfully deleted the appointment.
+        - 404 (Not Found): appointment was not found.
+    """
+    return delete_appointment_by_id(appointment_id)

@@ -2,12 +2,15 @@
 Business module for Appointment entities.
 """
 
+from flask_smorest import abort
 from typing import List
 from datetime import datetime
 from database.db_setup import db
 from database.models.appointment import Appointment
 from repositories.service_repository import get_service
+from repositories.appointment_repository import delete_appointment, get_appointment
 from validations.appointment_validation import AppointmentValidation
+from validations.base import BaseValidation
 
 
 def create_appointment(date: str, customer_id: int,
@@ -42,4 +45,31 @@ def create_appointment(date: str, customer_id: int,
         return appointment
     except Exception as error:
         db.session.rollback()
+        raise error
+
+
+def delete_appointment_by_id(appointment_id: int) -> bool:
+    """
+    Deletes an existing appointment by its ID.
+
+    Args:
+        appointment_id (int): The appointment's unique identifier.
+
+    Returns:
+        bool: True if the appointment was successfully deleted.
+
+    Raises:
+        werkzeug.exceptions.NotFound: If the appointment does not exist.
+        Exception: If an unexpected error occurs during deletion.
+    """
+
+    try:
+        BaseValidation.validate_positive_int(appointment_id, 'appointment')
+
+        appointment = get_appointment(appointment_id)
+        if appointment is None:
+            abort(404, errors={'json': ['appointment not found.']})
+
+        return delete_appointment(appointment)
+    except Exception as error:
         raise error

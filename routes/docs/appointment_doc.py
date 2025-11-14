@@ -4,14 +4,16 @@ This module contains standard descriptions and responses for the Appointment API
 
 from schemas.error_schema import ErrorSchema
 
-
+DELETE_APPOINTMENT_SUMMARY = 'Deleta as informações de um agendamento.'
+DELETE_APPOINTMENT_DESCRIPTION = 'Este endpoint apaga as informações de um agendamento ' \
+    'informado caso o mesmo seja encontrado.'
 GET_APPOINTMENT_SUMMARY = 'Retorna a lista de todos os agendamentos cadatrados.'
 GET_APPOINTMENT_DESCRIPTION = 'Este endpoint retorna uma coleção de agendamentos cadastrados ' \
     'no formato JSON.'
 POST_APPOINTMENT_SUMMARY = 'Lida com a criação de um novo agendamento.'
 POST_APPOINTMENT_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de agendamento.'
-appointment_responses = {
+post_appointment_responses = {
     400: {
         'description':
         'Bad Request: A requisição está fora dos parâmetros adequados.\n\n'
@@ -111,4 +113,36 @@ appointment_responses = {
             }
         }
     }
+}
+delete_appointment_responses = {
+    400: {
+        'description': 'Bad Request: O formato do id é inválido.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 400,
+                    'errors': {
+                        'json': ['Invalid appointment id.']
+                    },
+                    'status': 'Bad Request'
+                }
+            }
+        }
+    },
+    404: {
+        'description': 'Not Found: O agendamento informado não foi encontrado.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 404,
+                    'errors': {
+                        'json': ['Appointment not found.']
+                    },
+                    'status': 'Not Found'
+                }
+            }
+        }
+    },
 }
