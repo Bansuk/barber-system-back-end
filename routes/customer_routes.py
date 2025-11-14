@@ -4,14 +4,17 @@ Route module for Customer routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.customer_schema import CustomerSchema, CustomerViewSchema
-from business.customer_business import create_customer
+from business.customer_business import create_customer, delete_customer_by_id
 from repositories.customer_repository import get_all_customers
 from routes.docs.customer_doc import (
-    GET_CUSTOMER_SUMMARY,
+    DELETE_CUSTOMER_DESCRIPTION,
+    DELETE_CUSTOMER_SUMMARY,
     GET_CUSTOMER_DESCRIPTION,
-    POST_CUSTOMER_SUMMARY,
+    GET_CUSTOMER_SUMMARY,
     POST_CUSTOMER_DESCRIPTION,
-    customer_responses,
+    POST_CUSTOMER_SUMMARY,
+    delete_customer_responses,
+    post_customer_responses,
 )
 
 customer_bp = SmorestBlueprint(
@@ -22,7 +25,7 @@ customer_bp = SmorestBlueprint(
 @customer_bp.arguments(CustomerSchema)
 @customer_bp.response(201, CustomerViewSchema, description='Cliente cadastrado com sucesso.')
 @customer_bp.doc(summary=POST_CUSTOMER_SUMMARY, description=POST_CUSTOMER_DESCRIPTION,
-                 responses=customer_responses)
+                 responses=post_customer_responses)
 def add_customer(customer_data):
     """
     Handles the creation of a new customer.
@@ -59,3 +62,18 @@ def get_customers():
     """
 
     return get_all_customers()
+
+
+@customer_bp.route('/customer/<int:customer_id>', methods=['DELETE'])
+@customer_bp.response(204)
+@customer_bp.doc(summary=DELETE_CUSTOMER_SUMMARY, description=DELETE_CUSTOMER_DESCRIPTION, responses=delete_customer_responses)
+def remove_customer(customer_id):
+    """
+    Delete a customer.
+
+    Responses:
+        JSON response:
+        - 204 (No Content): Successfully deleted the customer.
+        - 404 (Not Found): Customer was not found.
+    """
+    return delete_customer_by_id(customer_id)

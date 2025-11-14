@@ -43,3 +43,17 @@ class CustomerValidation():
                     'email': ['Email already registered.']
                 }
             })
+
+    @staticmethod
+    def validate_customer_id_type(customer_id: int) -> None:
+        """
+        Validates customer id.
+
+        Args:
+            customer_id (id): The customer's id.
+
+        Raises:
+            HTTPException: If any validation fails.
+        """
+        if not isinstance(customer_id, int) or customer_id <= 0:
+            abort(400, errors={'json': ['Invalid customer id.']})

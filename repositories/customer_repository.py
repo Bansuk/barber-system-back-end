@@ -44,3 +44,24 @@ def get_all_customers() -> List[Customer]:
     """
 
     return db.session.query(Customer).all()
+
+
+def delete_customer(customer: Customer) -> bool:
+    """
+    Deletes the given customer from the database.
+
+    Returns:
+        bool: True if the customer was deleted successfully.
+
+    Raises:
+        Exception: If the deletion fails.
+    """
+
+    try:
+        db.session.delete(customer)
+        db.session.commit()
+
+        return True
+    except Exception as error:
+        db.session.rollback()
+        raise error
