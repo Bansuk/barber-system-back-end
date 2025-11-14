@@ -2,9 +2,12 @@
 Repository module for Employee queries.
 """
 
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 from database.models.employee import Employee
 from database.db_setup import db
+
+if TYPE_CHECKING:
+    from ..database.models.service import Service
 
 
 def get_employee(employee_id: int) -> Optional[Employee]:
@@ -62,6 +65,28 @@ def delete_employee(employee: Employee) -> bool:
         db.session.commit()
 
         return True
+    except Exception as error:
+        db.session.rollback()
+        raise error
+
+
+def add_employee(name: str, email: str, services: List['Service']) -> Employee:
+    """
+    Adds a new employee to the database.
+
+    Returns:
+        Employee: Created employee.
+
+    Raises:
+        Exception: If the addition fails.
+    """
+
+    try:
+        employee = Employee(name, email, services, appointments=[])
+        db.session.add(employee)
+        db.session.commit()
+
+        return employee
     except Exception as error:
         db.session.rollback()
         raise error

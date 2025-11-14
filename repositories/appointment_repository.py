@@ -2,10 +2,13 @@
 Repository module for Appointment queries.
 """
 
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 from datetime import datetime
 from database.db_setup import db
 from database.models.appointment import Appointment
+
+if TYPE_CHECKING:
+    from ..database.models.service import Service
 
 
 def get_all_appointments() -> List[Appointment]:
@@ -96,6 +99,29 @@ def delete_appointment(appointment: Appointment) -> bool:
         db.session.commit()
 
         return True
+    except Exception as error:
+        db.session.rollback()
+        raise error
+
+
+def add_appointment(date: str, customer_id: int,
+                    employee_id: int, services: List['Service']) -> Appointment:
+    """
+    Adds a new appointment to the database.
+
+    Returns:
+        Appointment: Created appointment.
+
+    Raises:
+        Exception: If the addition fails.
+    """
+
+    try:
+        appointment = Appointment(date, services, employee_id, customer_id)
+        db.session.add(appointment)
+        db.session.commit()
+
+        return appointment
     except Exception as error:
         db.session.rollback()
         raise error

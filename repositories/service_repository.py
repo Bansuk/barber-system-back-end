@@ -90,3 +90,26 @@ def delete_service(service: Service) -> bool:
     except Exception as error:
         db.session.rollback()
         raise error
+
+
+def add_service(name: str, price: int) -> Service:
+    """
+    Adds a new service to the database.
+
+    Returns:
+        Service: Created service.
+
+    Raises:
+        Exception: If the addition fails.
+    """
+
+    try:
+        service = Service(name=name, price=price,
+                          employees=[], appointments=[])
+        db.session.add(service)
+        db.session.commit()
+
+        return service
+    except Exception as error:
+        db.session.rollback()
+        raise error

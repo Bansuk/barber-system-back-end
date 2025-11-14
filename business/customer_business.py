@@ -3,9 +3,8 @@ Business module for Customer entities.
 """
 
 from flask_smorest import abort
-from repositories.customer_repository import delete_customer, get_customer
+from repositories.customer_repository import add_customer, delete_customer, get_customer
 from database.models.customer import Customer
-from database.db_setup import db
 from validations.base import BaseValidation
 from validations.customer_validation import CustomerValidation
 
@@ -24,16 +23,7 @@ def create_customer(name: str, email: str) -> Customer:
 
     CustomerValidation.validate_customer(email)
 
-    customer = Customer(name, email, appointments=[])
-
-    try:
-        db.session.add(customer)
-        db.session.commit()
-
-        return customer
-    except Exception as error:
-        db.session.rollback()
-        raise error
+    return add_customer(name, email)
 
 
 def delete_customer_by_id(customer_id: int) -> bool:

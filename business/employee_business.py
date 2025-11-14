@@ -5,8 +5,7 @@ Business module for Employee entities.
 from typing import List
 from flask_smorest import abort
 from database.models.employee import Employee
-from database.db_setup import db
-from repositories.employee_repository import delete_employee, get_employee
+from repositories.employee_repository import add_employee, delete_employee, get_employee
 from repositories.service_repository import get_services_by_services_ids
 from validations.employee_validation import EmployeeValidation
 from validations.base import BaseValidation
@@ -29,16 +28,7 @@ def create_employee(name: str, email: str, services: List[int]) -> Employee:
 
     services = get_services_by_services_ids(services_ids=services)
 
-    employee = Employee(name, email, services, appointments=[])
-
-    try:
-        db.session.add(employee)
-        db.session.commit()
-
-        return employee
-    except Exception as error:
-        db.session.rollback()
-        raise error
+    return add_employee(name, email, services)
 
 
 def delete_employee_by_id(employee_id: int) -> bool:

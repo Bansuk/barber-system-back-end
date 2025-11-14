@@ -65,3 +65,26 @@ def delete_customer(customer: Customer) -> bool:
     except Exception as error:
         db.session.rollback()
         raise error
+
+
+def add_customer(name: str, email: str) -> Customer:
+    """
+    Adds a new customer to the database.
+
+    Returns:
+        Customer: Created customer.
+
+    Raises:
+        Exception: If the addition fails.
+    """
+
+    try:
+        customer = Customer(name, email, appointments=[])
+
+        db.session.add(customer)
+        db.session.commit()
+
+        return customer
+    except Exception as error:
+        db.session.rollback()
+        raise error

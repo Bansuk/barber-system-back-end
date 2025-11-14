@@ -5,7 +5,7 @@ Business module for Service entities.
 from flask_smorest import abort
 from database.models.service import Service
 from database.db_setup import db
-from repositories.service_repository import delete_service, get_service
+from repositories.service_repository import add_service, delete_service, get_service
 from validations.base import BaseValidation
 from validations.service_validation import ServiceValidation
 
@@ -24,16 +24,7 @@ def create_service(name: str, price: int) -> Service:
 
     ServiceValidation.validate_service(name, price)
 
-    service = Service(name=name, price=price, employees=[], appointments=[])
-
-    try:
-        db.session.add(service)
-        db.session.commit()
-
-        return service
-    except Exception as error:
-        db.session.rollback()
-        raise error
+    add_service(name, price)
 
 
 def delete_service_by_id(service_id: int) -> bool:
