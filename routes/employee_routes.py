@@ -4,14 +4,17 @@ Route module for Employee routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.employee_schema import EmployeeSchema, EmployeeViewSchema
-from business.employee_business import create_employee
+from business.employee_business import create_employee, delete_employee_by_id
 from repositories.employee_repository import get_all_employees
 from routes.docs.employee_doc import (
-    GET_EMPLOYEE_SUMMARY,
+    DELETE_EMPLOYEE_DESCRIPTION,
+    DELETE_EMPLOYEE_SUMMARY,
     GET_EMPLOYEE_DESCRIPTION,
-    POST_EMPLOYEE_SUMMARY,
+    GET_EMPLOYEE_SUMMARY,
     POST_EMPLOYEE_DESCRIPTION,
-    employee_responses,
+    POST_EMPLOYEE_SUMMARY,
+    delete_employee_responses,
+    post_employee_responses,
 )
 
 employee_bp = SmorestBlueprint(
@@ -21,7 +24,7 @@ employee_bp = SmorestBlueprint(
 @employee_bp.route('/employee', methods=['POST'])
 @employee_bp.arguments(EmployeeSchema)
 @employee_bp.doc(summary=POST_EMPLOYEE_SUMMARY, description=POST_EMPLOYEE_DESCRIPTION,
-                 responses=employee_responses)
+                 responses=post_employee_responses)
 @employee_bp.response(201, EmployeeViewSchema, description='Funcionário(a) cadastrado com sucesso.')
 def add_employee(employee_data):
     """
@@ -58,3 +61,18 @@ def get_employees():
     """
 
     return get_all_employees()
+
+
+@employee_bp.route('/employee/<int:employee_id>', methods=['DELETE'])
+@employee_bp.response(204)
+@employee_bp.doc(summary=DELETE_EMPLOYEE_SUMMARY, description=DELETE_EMPLOYEE_DESCRIPTION, responses=delete_employee_responses)
+def remove_employee(employee_id):
+    """
+    Deletes an employee.
+
+    Responses:
+        JSON response:
+        - 204 (No Content): Successfully deleted the employee.
+        - 404 (Not Found): Employee was not found.
+    """
+    return delete_employee_by_id(employee_id)

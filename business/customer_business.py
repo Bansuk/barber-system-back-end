@@ -6,6 +6,7 @@ from flask_smorest import abort
 from repositories.customer_repository import delete_customer, get_customer
 from database.models.customer import Customer
 from database.db_setup import db
+from validations.base import BaseValidation
 from validations.customer_validation import CustomerValidation
 
 
@@ -51,7 +52,7 @@ def delete_customer_by_id(customer_id: int) -> bool:
     """
 
     try:
-        CustomerValidation.validate_customer_id_type(customer_id)
+        BaseValidation.validate_positive_int(customer_id, 'customer')
 
         customer = get_customer(customer_id)
         if customer is None:

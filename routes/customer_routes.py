@@ -69,7 +69,7 @@ def get_customers():
 @customer_bp.doc(summary=DELETE_CUSTOMER_SUMMARY, description=DELETE_CUSTOMER_DESCRIPTION, responses=delete_customer_responses)
 def remove_customer(customer_id):
     """
-    Delete a customer.
+    Deletes a customer.
 
     Responses:
         JSON response:

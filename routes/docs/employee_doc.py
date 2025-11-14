@@ -4,14 +4,16 @@ This module contains standard descriptions and responses for the Employee API.
 
 from schemas.error_schema import ErrorSchema
 
-
+DELETE_EMPLOYEE_SUMMARY = 'Deleta as informações de um funcionário(a).'
+DELETE_EMPLOYEE_DESCRIPTION = 'Este endpoint apaga as informações do(a) funcionário(a) ' \
+    'informado caso o(a) mesmo(a) seja encontrado(a).'
 GET_EMPLOYEE_SUMMARY = 'Retorna a lista de todos os funcionários cadatrados.'
 GET_EMPLOYEE_DESCRIPTION = 'Este endpoint retorna uma coleção de cadastros de funcionários ' \
     'no formato JSON.'
 POST_EMPLOYEE_SUMMARY = 'Lida com a criação de um novo funcionário(a).'
 POST_EMPLOYEE_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de funcionário(a).'
-employee_responses = {
+post_employee_responses = {
     400: {
         'description': 'Bad Request: O formato do corpo JSON é inválido.',
         'content': {
@@ -89,4 +91,36 @@ employee_responses = {
             }
         }
     }
+}
+delete_employee_responses = {
+    400: {
+        'description': 'Bad Request: O formato do id é inválido.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 400,
+                    'errors': {
+                        'json': ['Invalid employee id.']
+                    },
+                    'status': 'Bad Request'
+                }
+            }
+        }
+    },
+    404: {
+        'description': 'Not Found: O funcionário(a) informado não foi encontrado.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 404,
+                    'errors': {
+                        'json': ['Employee not found.']
+                    },
+                    'status': 'Not Found'
+                }
+            }
+        }
+    },
 }

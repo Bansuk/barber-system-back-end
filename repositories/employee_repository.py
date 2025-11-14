@@ -44,3 +44,24 @@ def get_all_employees() -> List[Employee]:
     """
 
     return db.session.query(Employee).all()
+
+
+def delete_employee(employee: Employee) -> bool:
+    """
+    Deletes the given employee from the database.
+
+    Returns:
+        bool: True if the employee was deleted successfully.
+
+    Raises:
+        Exception: If the deletion fails.
+    """
+
+    try:
+        db.session.delete(employee)
+        db.session.commit()
+
+        return True
+    except Exception as error:
+        db.session.rollback()
+        raise error
