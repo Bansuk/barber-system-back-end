@@ -13,6 +13,42 @@ GET_CUSTOMER_DESCRIPTION = 'Este endpoint retorna uma coleção de cadastros de 
 POST_CUSTOMER_SUMMARY = 'Lida com a criação de um novo cliente.'
 POST_CUSTOMER_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de cliente.'
+UPDATE_CUSTOMER_SUMMARY = 'Lida com a atualização de um cliente cadatrado.'
+UPDATE_CUSTOMER_DESCRIPTION = 'Este endpoint processa o envio de um id e de um formulário (JSON) ' \
+    'para atualizar um registro de cliente.'
+
+delete_customer_responses = {
+    400: {
+        'description': 'Bad Request: O formato do id é inválido.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 400,
+                    'errors': {
+                        'json': ['Invalid customer id.']
+                    },
+                    'status': 'Bad Request'
+                }
+            }
+        }
+    },
+    404: {
+        'description': 'Not Found: O cliente informado não foi encontrado.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 404,
+                    'errors': {
+                        'json': ['Customer not found.']
+                    },
+                    'status': 'Not Found'
+                }
+            }
+        }
+    },
+}
 post_customer_responses = {
     400: {
         'description': 'Bad Request: O formato do corpo JSON é inválido.',
@@ -74,16 +110,18 @@ post_customer_responses = {
         }
     }
 }
-delete_customer_responses = {
+update_customer_responses = {
     400: {
-        'description': 'Bad Request: O formato do id é inválido.',
+        'description': 'Bad Request: O formato do corpo JSON é inválido.',
         'content': {
             'application/json': {
                 'schema': ErrorSchema,
                 'example': {
                     'code': 400,
                     'errors': {
-                        'json': ['Invalid customer id.']
+                        'json': [
+                            'Invalid JSON body.'
+                        ]
                     },
                     'status': 'Bad Request'
                 }
@@ -105,4 +143,22 @@ delete_customer_responses = {
             }
         }
     },
+    409: {
+        'description': 'Conflict: O email fornecido já está em uso. Por favor, '
+        'forneça um email diferente.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 409,
+                    'errors': {
+                        'json': {
+                            'email': ['Email already registered.']
+                        }
+                    },
+                    'status': 'Conflict'
+                }
+            }
+        }
+    }
 }

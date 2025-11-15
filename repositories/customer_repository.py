@@ -21,18 +21,18 @@ def get_customer(customer_id: int) -> Optional[Customer]:
     return db.session.query(Customer).filter_by(id=customer_id).first()
 
 
-def search_customer_email(email: str) -> Optional[str]:
+def search_customer_by_email(email: str) -> Optional[Customer]:
     """
-    Retrieves a customer email.
+    Retrieves a customer by email.
 
     Args:
         email (str): The customer's email to search.
 
     Returns:
-        str: The email found or None.
+        Customer | None: The matching customer or None.
     """
 
-    return db.session.query(Customer.email).filter_by(email=email).first()
+    return Customer.query.filter_by(email=email).first()
 
 
 def get_all_customers() -> List[Customer]:
@@ -80,6 +80,31 @@ def add_customer(name: str, email: str) -> Customer:
 
     try:
         customer = Customer(name, email, appointments=[])
+
+        db.session.add(customer)
+        db.session.commit()
+
+        return customer
+    except Exception as error:
+        db.session.rollback()
+        raise error
+
+
+def update_customer(customer: Customer, **fields) -> Customer:
+    """
+    Updates an existing customer in the database.
+
+    Returns:
+        Customer: Updated customer.
+
+    Raises:
+        Exception: If the update fails.
+    """
+
+    try:
+        for key, value in fields.items():
+            if hasattr(customer, key) and value is not None:
+                setattr(customer, key, value)
 
         db.session.add(customer)
         db.session.commit()

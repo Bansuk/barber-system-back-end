@@ -4,7 +4,7 @@ Route module for Customer routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.customer_schema import CustomerSchema, CustomerViewSchema
-from business.customer_business import create_customer, delete_customer_by_id
+from business.customer_business import create_customer, delete_customer_by_id, update_customer_by_id
 from repositories.customer_repository import get_all_customers
 from routes.docs.customer_doc import (
     DELETE_CUSTOMER_DESCRIPTION,
@@ -13,8 +13,11 @@ from routes.docs.customer_doc import (
     GET_CUSTOMER_SUMMARY,
     POST_CUSTOMER_DESCRIPTION,
     POST_CUSTOMER_SUMMARY,
+    UPDATE_CUSTOMER_DESCRIPTION,
+    UPDATE_CUSTOMER_SUMMARY,
     delete_customer_responses,
     post_customer_responses,
+    update_customer_responses,
 )
 
 customer_bp = SmorestBlueprint(
@@ -77,3 +80,22 @@ def remove_customer(customer_id):
         - 404 (Not Found): Customer was not found.
     """
     return delete_customer_by_id(customer_id)
+
+
+@customer_bp.route('/customer/<int:customer_id>', methods=['PATCH'])
+@customer_bp.arguments(CustomerSchema(partial=True))
+@customer_bp.response(200, CustomerSchema)
+@customer_bp.doc(summary=UPDATE_CUSTOMER_SUMMARY, description=UPDATE_CUSTOMER_DESCRIPTION, responses=update_customer_responses)
+def update_customer(customer_data, customer_id):
+    """
+    Partially updates a customer.
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully updated the customer.
+        - 400 (Bad Request): Invalid fields.
+        - 404 (Not Found): Customer was not found.
+        - 409 (Conflict): Email already registered.
+    """
+
+    return update_customer_by_id(customer_id, **customer_data)
