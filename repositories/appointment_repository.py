@@ -8,7 +8,7 @@ from database.db_setup import db
 from database.models.appointment import Appointment
 
 if TYPE_CHECKING:
-    from ..database.models.service import Service
+    from ..database.models.appointment import Appointment
 
 
 def get_all_appointments() -> List[Appointment]:
@@ -105,7 +105,7 @@ def delete_appointment(appointment: Appointment) -> bool:
 
 
 def add_appointment(date: str, customer_id: int,
-                    employee_id: int, services: List['Service']) -> Appointment:
+                    employee_id: int, appointments: List['Appointment']) -> Appointment:
     """
     Adds a new appointment to the database.
 
@@ -117,7 +117,32 @@ def add_appointment(date: str, customer_id: int,
     """
 
     try:
-        appointment = Appointment(date, services, employee_id, customer_id)
+        appointment = Appointment(date, appointments, employee_id, customer_id)
+        db.session.add(appointment)
+        db.session.commit()
+
+        return appointment
+    except Exception as error:
+        db.session.rollback()
+        raise error
+
+
+def update_appointment(appointment: Appointment, **fields) -> Appointment:
+    """
+    Updates an existing appointment in the database.
+
+    Returns:
+        Appointment: Updated appointment.
+
+    Raises:
+        Exception: If the update fails.
+    """
+
+    try:
+        for key, value in fields.items():
+            if hasattr(appointment, key) and value is not None:
+                setattr(appointment, key, value)
+
         db.session.add(appointment)
         db.session.commit()
 

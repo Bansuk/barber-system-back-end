@@ -1,169 +1,319 @@
-"""
-Validation module for Appointment entities.
-"""
+"""Validation module for Appointment entities."""
 
-from typing import List
 from datetime import datetime, timedelta, time
+from typing import Optional
 from flask_smorest import abort
+from werkzeug.exceptions import BadRequest
 from repositories.employee_repository import get_employee
 from repositories.customer_repository import get_customer
 from repositories.service_repository import get_service
-from repositories.appointment_repository import get_customer_appointment, get_employee_appointment
+from repositories.appointment_repository import (
+    get_customer_appointment,
+    get_employee_appointment
+)
+
+MAX_ADVANCE_DAYS = 7
+OPENING_TIME = time(9, 0)
+CLOSING_TIME = time(18, 0)
+
+ALLOWED_UPDATE_FIELDS = {'date': datetime,
+                         'employee_id': int, 'service_ids': list}
 
 
-class AppointmentValidation():
+class AppointmentValidation:
     """
     Validation class for Appointment entities.
+
+    Provides validation for appointment creation, including date/time
+    validation, entity existence checks, and availability verification.
     """
 
-    MAX_ADVANCE_DAYS = 7
-    OPENING_TIME = time(9, 0)
-    CLOSING_TIME = time(18, 0)
-
     @staticmethod
-    def _is_date_in_valid_range(date: datetime) -> bool:
+    def _validate_date_range(date: datetime) -> None:
         """
-        Validates that the appointment date is in accepted range.
+        Validate that the appointment date is within the allowed range.
 
         Args:
-            date (datetime): The appointment's date.
-
-        Returns:
-            bool: True if appointment date is in valid range, False otherwise.
-        """
-
-        now = datetime.now()
-        return now <= date <= now + timedelta(days=AppointmentValidation.MAX_ADVANCE_DAYS)
-
-    @staticmethod
-    def _is_time_in_business_hours_range(date: datetime) -> bool:
-        """
-        Validates that the appointment time is in business hours range.
-
-        Args:
-            date (datetime): The appointment's date.
-
-        Returns:
-            bool: True if date is in business hours range, False otherwise.
-        """
-
-        return AppointmentValidation.OPENING_TIME <= date.time() < AppointmentValidation.CLOSING_TIME
-
-    @staticmethod
-    def _are_services_valid(services_ids: List[int]) -> bool:
-        """
-        Checks if all provided services ID's exists.
-
-        Args:
-            services_ids (List[int]): List of service IDs.
-
-        Returns:
-            bool: True if all servicse were found, False otherwise.
-        """
-
-        return all(get_service(service_id) is not None for service_id in services_ids)
-
-    @staticmethod
-    def _is_employee_valid(employee_id: int) -> bool:
-        """
-        Checks if the provided employee exists.
-
-        Args:
-            employee_id (int): The employee's ID.
-
-        Returns:
-            bool: True if employee was found, False otherwise.
-        """
-
-        return get_employee(employee_id) is not None
-
-    @staticmethod
-    def _is_customer_valid(customer_id: int) -> bool:
-        """
-        Checks if the provided customer exists.
-
-        Args:
-            customer_id (int): The customer's ID.
-
-        Returns:
-            bool: True if customer was found, False otherwise.
-        """
-
-        return get_customer(customer_id) is not None
-
-    @staticmethod
-    def _is_date_available(date: datetime, employee_id: int, customer_id: int) -> bool:
-        """
-        Checks if the given appointment time conflicts with any existing appointments
-        for the provided customer or employee.
-
-        Args:
-            date (datetime): The appointment's date.
-            employee_id (int): The employee's ID.
-            customer_id (int): The customer's ID.
-
-        Returns:
-            bool: True if the date is available, False otherwise.
-        """
-
-        return not get_customer_appointment(date, customer_id) and not get_employee_appointment(
-            date, employee_id
-        )
-
-    @staticmethod
-    def validate_appointment(date: datetime, customer_id: int,
-                             employee_id: int, services_ids: List[int]) -> None:
-        """
-        Validates appointment.
-
-        Args:
-            date (datetime): The appointment's date.
-            customer_id (int): The customer's ID.
-            employee_id (int): The employee's ID.
-            services_ids (List[int]): List of service IDs.
+            date: The appointment's date.
 
         Raises:
-            HTTPException: If any validation fails.
+            HTTPException: If date is outside allowed range (400).
         """
+        now = datetime.now()
+        max_date = now + timedelta(days=MAX_ADVANCE_DAYS)
 
-        if not AppointmentValidation._is_date_in_valid_range(date):
+        if not now <= date <= max_date:
             abort(400, errors={
                 'json': {
-                    'date': ['Date is outside of allowed range.']
+                    'date': [f'Date must be between now and {MAX_ADVANCE_DAYS} days in advance.']
                 }
             })
 
-        if not AppointmentValidation._is_time_in_business_hours_range(date):
+    @staticmethod
+    def _validate_business_hours(date: datetime) -> None:
+        """
+        Validate that the appointment time is within business hours.
+
+        Args:
+            date: The appointment's date.
+
+        Raises:
+            HTTPException: If time is outside business hours (400).
+        """
+        if not OPENING_TIME <= date.time() < CLOSING_TIME:
+            opening = OPENING_TIME.strftime('%H:%M')
+            closing = CLOSING_TIME.strftime('%H:%M')
             abort(400, errors={
                 'json': {
-                    'date': ['Hour is outside of working hours.']
+                    'date': [f'Appointments must be between {opening} and {closing}.']
                 }
             })
 
-        if not AppointmentValidation._is_date_available(date, employee_id, customer_id):
+    @staticmethod
+    def _validate_date_available(
+        date: datetime,
+        employee_id: int,
+        customer_id: int
+    ) -> None:
+        """
+        Validate that the time slot is available for both customer and employee.
+
+        Args:
+            date: The appointment's date.
+            employee_id: The employee's ID.
+            customer_id: The customer's ID.
+
+        Raises:
+            HTTPException: If the time slot is already booked (409).
+        """
+        if get_customer_appointment(date, customer_id):
             abort(409, errors={
-                'json': {
-                    'date': ['Selecetd date is unavailable.']
-                }
+                'json': {'date': ['Customer already has an appointment at this time.']}
             })
 
-        if not AppointmentValidation._are_services_valid(services_ids):
-            abort(404, errors={
-                'json': {
-                    'service': ['Provided services were not found.']
-                }
+        if get_employee_appointment(date, employee_id):
+            abort(409, errors={
+                'json': {'date': ['Employee already has an appointment at this time.']}
             })
 
-        if not AppointmentValidation._is_employee_valid(employee_id):
-            abort(404, errors={
-                'json': {
-                    'employee': ['Provided employee was not found.']
-                }
-            })
+    @staticmethod
+    def _get_validated_services(service_ids: list[int]) -> list:
+        """
+        Validate and retrieve Service objects for the given IDs.
 
-        if not AppointmentValidation._is_customer_valid(customer_id):
+        Args:
+            service_ids: List of service IDs to validate.
+
+        Returns:
+            List of Service objects.
+
+        Raises:
+            HTTPException: If any service is not found (404).
+        """
+        if not service_ids:
+            abort(400, errors={'json': {'service_ids': [
+                  'At least one service is required.']}})
+
+        services = []
+        for service_id in service_ids:
+            service = get_service(service_id)
+            if service is None:
+                abort(404, errors={
+                    'json': {'service_ids': [f'Service with ID {service_id} not found.']}
+                })
+            services.append(service)
+
+        return services
+
+    @staticmethod
+    def _get_validated_employee(employee_id: int) -> object:
+        """
+        Validate and retrieve the Employee object.
+
+        Args:
+            employee_id: The employee's ID.
+
+        Returns:
+            The Employee object.
+
+        Raises:
+            HTTPException: If employee is not found (404).
+        """
+        employee = get_employee(employee_id)
+        if employee is None:
             abort(404, errors={
-                'json': {
-                    'customer': ['Provided customer was not found.']
-                }
+                'json': {'employee_id': [f'Employee with ID {employee_id} not found.']}
             })
+        return employee
+
+    @staticmethod
+    def _get_validated_customer(customer_id: int) -> object:
+        """
+        Validate and retrieve the Customer object.
+
+        Args:
+            customer_id: The customer's ID.
+
+        Returns:
+            The Customer object.
+
+        Raises:
+            HTTPException: If customer is not found (404).
+        """
+        customer = get_customer(customer_id)
+        if customer is None:
+            abort(404, errors={
+                'json': {'customer_id': [f'Customer with ID {customer_id} not found.']}
+            })
+        return customer
+
+    @staticmethod
+    def validate_appointment(
+        date: datetime,
+        customer_id: int,
+        employee_id: int,
+        service_ids: list[int]
+    ) -> dict:
+        """
+        Validate a new appointment's data.
+
+        Args:
+            date: The appointment's date and time.
+            customer_id: The customer's ID.
+            employee_id: The employee's ID.
+            service_ids: List of service IDs for the appointment.
+
+        Returns:
+            Dictionary containing validated entities:
+                - customer: The Customer object
+                - employee: The Employee object
+                - services: List of Service objects
+
+        Raises:
+            HTTPException: If any validation fails (400, 404, or 409).
+        """
+        # Validate entities first (fail fast if IDs are invalid)
+        customer = AppointmentValidation._get_validated_customer(customer_id)
+        employee = AppointmentValidation._get_validated_employee(employee_id)
+        services = AppointmentValidation._get_validated_services(service_ids)
+
+        # Then validate date/time constraints
+        AppointmentValidation._validate_date_range(date)
+        AppointmentValidation._validate_business_hours(date)
+        AppointmentValidation._validate_date_available(
+            date, employee_id, customer_id)
+
+        return {
+            'customer': customer,
+            'employee': employee,
+            'services': services
+        }
+
+    @staticmethod
+    def _validate_update_payload(payload: dict) -> dict:
+        """
+        Validate and clean the update payload.
+
+        Args:
+            payload: Raw update data.
+
+        Returns:
+            Cleaned dictionary with only valid fields.
+
+        Raises:
+            BadRequest: If payload contains invalid types or no valid fields.
+        """
+        cleaned = {}
+
+        for field, expected_type in ALLOWED_UPDATE_FIELDS.items():
+            value = payload.get(field)
+            if value is None:
+                continue
+
+            # Special handling for datetime (may come as string)
+            if expected_type == datetime:
+                if isinstance(value, datetime):
+                    cleaned[field] = value
+                elif isinstance(value, str):
+                    try:
+                        cleaned[field] = datetime.fromisoformat(value)
+                    except ValueError:
+                        raise BadRequest(
+                            description=f"Field '{field}' must be a valid ISO datetime string."
+                        )
+                else:
+                    raise BadRequest(
+                        description=f"Field '{field}' must be a datetime or ISO string."
+                    )
+            elif not isinstance(value, expected_type):
+                raise BadRequest(
+                    description=f"Field '{field}' must be of type {expected_type.__name__}."
+                )
+            else:
+                cleaned[field] = value
+
+        if not cleaned:
+            raise BadRequest(description='No valid fields to update.')
+
+        return cleaned
+
+    @staticmethod
+    def validate_appointment_update(
+        fields: dict,
+        current_customer_id: int,
+        current_employee_id: Optional[int] = None,
+        current_date: Optional[datetime] = None
+    ) -> dict:
+        """
+        Validate update payload and check constraints.
+
+        Args:
+            fields: Raw update payload.
+            current_customer_id: ID of the customer (cannot be changed).
+            current_employee_id: Current employee ID (for availability check).
+            current_date: Current appointment date (for availability check).
+
+        Returns:
+            Cleaned fields with validated entities ready to apply:
+                - date: The validated datetime (if provided)
+                - employee: The Employee object (if employee_id provided)
+                - services: List of Service objects (if service_ids provided)
+
+        Raises:
+            BadRequest: For invalid payloads.
+            HTTPException: For not found (404) or conflicts (409).
+        """
+        cleaned = AppointmentValidation._validate_update_payload(fields)
+        result = {}
+
+        # Validate and convert employee_id to employee object
+        if 'employee_id' in cleaned:
+            result['employee'] = AppointmentValidation._get_validated_employee(
+                cleaned['employee_id']
+            )
+            employee_id = cleaned['employee_id']
+        else:
+            employee_id = current_employee_id
+
+        # Validate and convert service_ids to service objects
+        if 'service_ids' in cleaned:
+            result['services'] = AppointmentValidation._get_validated_services(
+                cleaned['service_ids']
+            )
+
+        # Validate date constraints and availability
+        if 'date' in cleaned:
+            date = cleaned['date']
+            AppointmentValidation._validate_date_range(date)
+            AppointmentValidation._validate_business_hours(date)
+            AppointmentValidation._validate_date_available(
+                date, employee_id, current_customer_id
+            )
+            result['date'] = date
+        elif employee_id != current_employee_id and current_date:
+            # Employee changed but date didn't - check new employee's availability
+            AppointmentValidation._validate_date_available(
+                current_date, employee_id, current_customer_id
+            )
+
+        return result

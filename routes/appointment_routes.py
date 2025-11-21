@@ -4,7 +4,7 @@ Route module for Appointment routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.appointment_schema import AppointmentSchema, AppointmentViewSchema
-from business.appointment_business import create_appointment, delete_appointment_by_id
+from business.appointment_business import create_appointment, delete_appointment_by_id, update_appointment_by_id
 from repositories.appointment_repository import get_all_appointments
 from routes.docs.appointment_doc import (
     DELETE_APPOINTMENT_DESCRIPTION,
@@ -13,8 +13,11 @@ from routes.docs.appointment_doc import (
     GET_APPOINTMENT_SUMMARY,
     POST_APPOINTMENT_DESCRIPTION,
     POST_APPOINTMENT_SUMMARY,
+    UPDATE_APPOINTMENT_DESCRIPTION,
+    UPDATE_APPOINTMENT_SUMMARY,
     delete_appointment_responses,
     post_appointment_responses,
+    update_appointment_responses
 )
 
 appointment_bp = SmorestBlueprint(
@@ -33,7 +36,7 @@ def add_appointment(apointment_data):
     This endpoint processes a form submission (JSON) to create a new appointment record.
 
 
-    Receives a JSON payload with 'date', 'customer_id', 'employee_id', and 'services_ids',
+    Receives a JSON payload with 'date', 'customer_id', 'employee_id', and 'appointments_ids',
     calls the business logic to create an appointment,
     and returns an appropriate response.
 
@@ -78,3 +81,22 @@ def remove_appointment(appointment_id):
         - 404 (Not Found): appointment was not found.
     """
     return delete_appointment_by_id(appointment_id)
+
+
+@appointment_bp.route('/appointment/<int:appointment_id>', methods=['PATCH'])
+@appointment_bp.arguments(AppointmentSchema(partial=True))
+@appointment_bp.response(200, AppointmentSchema)
+@appointment_bp.doc(summary=UPDATE_APPOINTMENT_SUMMARY, description=UPDATE_APPOINTMENT_DESCRIPTION, responses=update_appointment_responses)
+def update_appointment(appointment_data, appointment_id):
+    """
+    Partially updates a appointment.
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully updated the appointment.
+        - 400 (Bad Request): Invalid fields.
+        - 404 (Not Found): Appointment was not found.
+        - 409 (Conflict): Appointment already registered.
+    """
+
+    return update_appointment_by_id(appointment_id, **appointment_data)
