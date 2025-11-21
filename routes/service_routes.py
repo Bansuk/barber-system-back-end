@@ -4,7 +4,7 @@ Route module for Service routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.service_schema import ServiceSchema, ServiceViewSchema
-from business.service_business import create_service, delete_service_by_id
+from business.service_business import create_service, delete_service_by_id, update_service_by_id
 from repositories.service_repository import get_all_services
 from routes.docs.service_doc import (
     DELETE_SERVICE_DESCRIPTION,
@@ -13,8 +13,11 @@ from routes.docs.service_doc import (
     GET_SERVICE_SUMMARY,
     POST_SERVICE_DESCRIPTION,
     POST_SERVICE_SUMMARY,
+    UPDATE_SERVICE_DESCRIPTION,
+    UPDATE_SERVICE_SUMMARY,
     post_service_responses,
-    delete_service_responses
+    delete_service_responses,
+    update_service_responses
 )
 
 
@@ -78,3 +81,22 @@ def remove_service(service_id):
         - 404 (Not Found): service was not found.
     """
     return delete_service_by_id(service_id)
+
+
+@service_bp.route('/service/<int:service_id>', methods=['PATCH'])
+@service_bp.arguments(ServiceSchema(partial=True))
+@service_bp.response(200, ServiceSchema)
+@service_bp.doc(summary=UPDATE_SERVICE_SUMMARY, description=UPDATE_SERVICE_DESCRIPTION, responses=update_service_responses)
+def update_service(service_data, service_id):
+    """
+    Partially updates a service.
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully updated the service.
+        - 400 (Bad Request): Invalid fields.
+        - 404 (Not Found): Service was not found.
+        - 409 (Conflict): Service already registered.
+    """
+
+    return update_service_by_id(service_id, **service_data)

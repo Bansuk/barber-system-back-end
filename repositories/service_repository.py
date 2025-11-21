@@ -113,3 +113,28 @@ def add_service(name: str, price: int) -> Service:
     except Exception as error:
         db.session.rollback()
         raise error
+
+
+def update_service(service: Service, **fields) -> Service:
+    """
+    Updates an existing service in the database.
+
+    Returns:
+        Service: Updated service.
+
+    Raises:
+        Exception: If the update fails.
+    """
+
+    try:
+        for key, value in fields.items():
+            if hasattr(service, key) and value is not None:
+                setattr(service, key, value)
+
+        db.session.add(service)
+        db.session.commit()
+
+        return service
+    except Exception as error:
+        db.session.rollback()
+        raise error
