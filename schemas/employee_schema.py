@@ -10,6 +10,9 @@ NAME_DESCRIPTION = 'Nome do Funcionário(a)'
 EMAIL_METADATA = {
     'example': 'fulano@teste.com'}
 EMAIL_DESCRIPTION = 'E-mail do Funcionário(a)'
+PHONE_NUMBER_METADATA = {
+    'example': '+5521999999999'}
+PHONE_NUMBER_DESCRIPTION = 'Número celular do Funcionário(a)'
 SERVICES_METADATA = {'example': '[1]'}
 SERVICES_DESCRIPTION = 'Lista dos serviços executados pelo funcionário(a)'
 
@@ -28,6 +31,8 @@ class EmployeeSchema(Schema):
                       descriptiom=NAME_DESCRIPTION, validate=validate.Length(min=3, max=100))
     email = fields.Email(
         required=True, metadata=EMAIL_METADATA, description=EMAIL_DESCRIPTION)
+    phone_number = fields.Str(
+        required=True, metadata=PHONE_NUMBER_METADATA, description=PHONE_NUMBER_DESCRIPTION)
     service_ids = fields.List(
         fields.Int(),
         required=True,
@@ -53,6 +58,8 @@ class EmployeeViewSchema(Schema):
                       description=NAME_DESCRIPTION)
     email = fields.Email(
         required=True, metadata=EMAIL_METADATA, description=EMAIL_DESCRIPTION)
+    phone_number = fields.Str(
+        required=True, metadata=PHONE_NUMBER_METADATA, description=PHONE_NUMBER_DESCRIPTION)
     service_ids = fields.Method(
         'get_service_ids',
         metadata=SERVICES_METADATA,

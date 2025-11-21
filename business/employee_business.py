@@ -11,7 +11,7 @@ from validations.employee_validation import EmployeeValidation
 from validations.base import BaseValidation
 
 
-def create_employee(name: str, email: str, service_ids: List[int]) -> Employee:
+def create_employee(name: str, email: str, phone_number: str, service_ids: List[int]) -> Employee:
     """
     Creates a new Employee.
 
@@ -28,7 +28,7 @@ def create_employee(name: str, email: str, service_ids: List[int]) -> Employee:
 
     services = get_services_by_services_ids(service_ids)
 
-    return add_employee(name, email, services)
+    return add_employee(name, email, phone_number, services)
 
 
 def delete_employee_by_id(employee_id: int) -> bool:

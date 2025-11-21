@@ -70,7 +70,7 @@ def delete_employee(employee: Employee) -> bool:
         raise error
 
 
-def add_employee(name: str, email: str, services: List['Service']) -> Employee:
+def add_employee(name: str, email: str, phone_number: str, services: List['Service']) -> Employee:
     """
     Adds a new employee to the database.
 
@@ -82,7 +82,8 @@ def add_employee(name: str, email: str, services: List['Service']) -> Employee:
     """
 
     try:
-        employee = Employee(name, email, services, appointments=[])
+        employee = Employee(name, email, phone_number,
+                            services, appointments=[])
         db.session.add(employee)
         db.session.commit()
 
