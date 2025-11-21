@@ -14,7 +14,7 @@ from repositories.customer_repository import (
 )
 
 
-def create_customer(name: str, email: str) -> Customer:
+def create_customer(name: str, email: str, phone_number: str) -> Customer:
     """
     Creates a new customer.
 
@@ -28,7 +28,7 @@ def create_customer(name: str, email: str) -> Customer:
 
     CustomerValidation.validate_customer(email)
 
-    return add_customer(name, email)
+    return add_customer(name, email, phone_number)
 
 
 def delete_customer_by_id(customer_id: int) -> bool:

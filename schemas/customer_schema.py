@@ -10,6 +10,9 @@ NAME_DESCRIPTION = 'Nome do Cliente'
 EMAIL_METADATA = {
     'example': 'fulano@teste.com'}
 EMAIL_DESCRIPTION = 'E-mail do Cliente'
+PHONE_NUMBER_METADATA = {
+    'example': '+5521999999999'}
+PHONE_NUMBER_DESCRIPTION = 'Número celular do cliente'
 
 
 class CustomerSchema(Schema):
@@ -19,12 +22,15 @@ class CustomerSchema(Schema):
     Attributes:
         name (str): The name of the customer (min 3, max 100 characters).
         email (str): The customer's email address.
+        phone_number (str): The customer's cellphone number.
     """
 
     name = fields.Str(required=True, metadata=NAME_METADATA,
                       descriptiom=NAME_DESCRIPTION, validate=validate.Length(min=3, max=100))
     email = fields.Email(
         required=True, metadata=EMAIL_METADATA, description=EMAIL_DESCRIPTION)
+    phone_number = fields.Str(
+        required=True, metadata=PHONE_NUMBER_METADATA, description=PHONE_NUMBER_DESCRIPTION)
 
 
 class CustomerViewSchema(Schema):
@@ -35,6 +41,7 @@ class CustomerViewSchema(Schema):
         id (int): The unique identifier of the customer.
         name (str): The name of the customer.
         email (str): The customer's email address.
+        phone_number (str): The customer's cellphone number.
     """
 
     id = fields.Int(dump_only=True)
@@ -42,3 +49,5 @@ class CustomerViewSchema(Schema):
                       description=NAME_DESCRIPTION)
     email = fields.Email(
         required=True, metadata=EMAIL_METADATA, description=EMAIL_DESCRIPTION)
+    phone_number = fields.Str(
+        required=True, metadata=PHONE_NUMBER_METADATA, description=PHONE_NUMBER_DESCRIPTION)

@@ -67,7 +67,7 @@ def delete_customer(customer: Customer) -> bool:
         raise error
 
 
-def add_customer(name: str, email: str) -> Customer:
+def add_customer(name: str, email: str, phone_number: str) -> Customer:
     """
     Adds a new customer to the database.
 
@@ -79,7 +79,7 @@ def add_customer(name: str, email: str) -> Customer:
     """
 
     try:
-        customer = Customer(name, email, appointments=[])
+        customer = Customer(name, email, phone_number, appointments=[])
 
         db.session.add(customer)
         db.session.commit()
