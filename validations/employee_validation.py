@@ -1,89 +1,150 @@
-"""
-Validation module for Employee entities.
-"""
+"""Validation module for Employee entities."""
 
-from typing import List
+from typing import Optional
 from flask_smorest import abort
-from database.models.service import Service
 from repositories.service_repository import get_services_count, get_service
 from repositories.employee_repository import search_employee_email
+from validations.base import BaseValidation
+
+ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str, 'service_ids': list}
 
 
-class EmployeeValidation():
+class EmployeeValidation:
     """
     Validation class for Employee entities.
+
+    Provides validation for employee creation and updates, including
+    email uniqueness checks and service association validation.
     """
 
     @staticmethod
-    def _email_exists(email: str) -> bool:
+    def _find_employee_by_email(email: str) -> Optional[object]:
         """
-        Checks if the given email is already registered in the Employee database.
+        Search for an employee by email.
 
         Args:
-            email (str): The email to check.
+            email: The email to search for.
 
         Returns:
-            bool: True if the email exists, False otherwise.
+            The employee object if found, otherwise None.
         """
-
-        return search_employee_email(email) is not None
+        return search_employee_email(email)
 
     @staticmethod
-    def _services_is_empty() -> bool:
+    def _validate_services_exist() -> None:
         """
-        Checks if there is at least one registered Service 
-        to associate to Employee.
-
-        Returns:
-            bool: True if there are no Services, False otherwise.
-        """
-        return get_services_count() == 0
-
-    @staticmethod
-    def _are_services_valid(services: List[Service]) -> bool:
-        """
-        Checks if the provided Services exists.
-
-        Args:
-            services (List[Service]): List of Services.
-
-        Returns:
-            bool: True if all Services were found, False otherwise.
-        """
-
-        return bool(services) and all(get_service(service_id=service) is
-                                      not None for service in services)
-
-    @staticmethod
-    def validate_employee(email: str, services: List[Service]) -> None:
-        """
-        Validates employee.
-
-        Args:
-            email (str): The employee's name.
-            services (List[Service]): List of Services.
+        Ensure at least one service exists in the system.
 
         Raises:
-            HTTPException: If any validation fails.
+            HTTPException: If no services are registered (422).
         """
-
-        if EmployeeValidation._email_exists(email):
-            abort(409, errors={
-                'json': {
-                    'email': ['Email already registered.']
-                }
-            })
-
-        if EmployeeValidation._services_is_empty():
+        if get_services_count() == 0:
             abort(422, errors={
                 'json': {
                     'service': ['A service must be registered before registering an employee.']
                 }
             })
 
-        if not EmployeeValidation._are_services_valid(services):
-            abort(404, errors={
-                'json': {
-                    'service': ['Service not found.']
-                }
-            })
+    @staticmethod
+    def _get_validated_services(service_ids: list[int]) -> list:
+        """
+        Validate and retrieve Service objects for the given IDs.
+
+        Args:
+            service_ids: List of service IDs to validate.
+
+        Returns:
+            List of Service objects.
+
+        Raises:
+            HTTPException: If any service is not found (404).
+        """
+        if not service_ids:
+            abort(404, errors={'json': {'service': ['Service not found.']}})
+
+        services = []
+        for service_id in service_ids:
+            service = get_service(service_id=service_id)
+            if service is None:
+                abort(404, errors={
+                      'json': {'service': ['Service not found.']}})
+            services.append(service)
+
+        return services
+
+    @staticmethod
+    def _validate_email_unique(email: str, exclude_id: Optional[int] = None) -> None:
+        """
+        Validate that an email is not already registered.
+
+        Args:
+            email: The email to check.
+            exclude_id: Employee ID to exclude from the check (for updates).
+
+        Raises:
+            HTTPException: If email is already registered (409).
+        """
+        existing = EmployeeValidation._find_employee_by_email(email)
+        if existing is None:
+            return
+
+        if exclude_id is not None and getattr(existing, 'id', None) == exclude_id:
+            return
+
+        BaseValidation.abort_email_conflict()
+
+    @staticmethod
+    def validate_employee(email: str, service_ids: list[int]) -> list:
+        """
+        Validate a new employee's data.
+
+        Args:
+            email: The employee's email.
+            service_ids: List of service IDs to associate.
+
+        Returns:
+            List of validated Service objects.
+
+        Raises:
+            HTTPException: If email is taken (409), no services exist (422),
+                or any service ID is invalid (404).
+        """
+        EmployeeValidation._validate_email_unique(email)
+        EmployeeValidation._validate_services_exist()
+        return EmployeeValidation._get_validated_services(service_ids)
+
+    @staticmethod
+    def validate_employee_update(
+        fields: dict,
+        current_employee_id: Optional[int] = None
+    ) -> dict:
+        """
+        Validate update payload and check uniqueness constraints.
+
+        Args:
+            fields: Raw update payload.
+            current_employee_id: ID of the employee being updated. If provided,
+                allows the same email if it belongs to this employee.
+
+        Returns:
+            Cleaned fields ready to apply.
+
+        Raises:
+            BadRequest: For invalid payloads.
+            HTTPException: For uniqueness conflicts (409) or invalid services (404).
+        """
+        cleaned = BaseValidation.validate_update_payload(
+            fields, allowed_update_fields=ALLOWED_UPDATE_FIELDS
+        )
+
+        if 'email' in cleaned:
+            EmployeeValidation._validate_email_unique(
+                cleaned['email'], exclude_id=current_employee_id
+            )
+
+        if 'service_ids' in cleaned:
+            cleaned['services'] = EmployeeValidation._get_validated_services(
+                cleaned.pop('service_ids')
+            )
+
+        return cleaned

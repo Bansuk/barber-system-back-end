@@ -90,3 +90,28 @@ def add_employee(name: str, email: str, services: List['Service']) -> Employee:
     except Exception as error:
         db.session.rollback()
         raise error
+
+
+def update_employee(employee: Employee, **fields) -> Employee:
+    """
+    Updates an existing employee in the database.
+
+    Returns:
+        employee: Updated employee.
+
+    Raises:
+        Exception: If the update fails.
+    """
+
+    try:
+        for key, value in fields.items():
+            if hasattr(employee, key) and value is not None:
+                setattr(employee, key, value)
+
+        db.session.add(employee)
+        db.session.commit()
+
+        return employee
+    except Exception as error:
+        db.session.rollback()
+        raise error

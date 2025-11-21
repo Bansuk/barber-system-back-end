@@ -13,6 +13,10 @@ GET_EMPLOYEE_DESCRIPTION = 'Este endpoint retorna uma coleção de cadastros de 
 POST_EMPLOYEE_SUMMARY = 'Lida com a criação de um novo funcionário(a).'
 POST_EMPLOYEE_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de funcionário(a).'
+UPDATE_EMPLOYEE_SUMMARY = 'Lida com a atualização de um funcionário(a) cadatrado(a).'
+UPDATE_EMPLOYEE_DESCRIPTION = 'Este endpoint processa o envio de um id e de um formulário (JSON) ' \
+    'para atualizar um registro de um(a) funcionário(a).'
+
 post_employee_responses = {
     400: {
         'description': 'Bad Request: O formato do corpo JSON é inválido.',
@@ -123,4 +127,56 @@ delete_employee_responses = {
             }
         }
     },
+}
+update_employee_responses = {
+    400: {
+        'description': 'Bad Request: O formato do corpo JSON é inválido.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 400,
+                    'errors': {
+                        'json': [
+                            'Invalid JSON body.'
+                        ]
+                    },
+                    'status': 'Bad Request'
+                }
+            }
+        }
+    },
+    404: {
+        'description': 'Not Found: O funcionário(a) informado não foi encontrado.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 404,
+                    'errors': {
+                        'json': ['Employee not found.']
+                    },
+                    'status': 'Not Found'
+                }
+            }
+        }
+    },
+    409: {
+        'description': 'Conflict: O email fornecido já está em uso. Por favor, '
+        'forneça um email diferente.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 409,
+                    'errors': {
+                        'json': {
+                            'email': ['Email already registered.']
+                        }
+                    },
+                    'status': 'Conflict'
+                }
+            }
+        }
+    }
 }

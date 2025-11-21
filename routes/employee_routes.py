@@ -4,7 +4,7 @@ Route module for Employee routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.employee_schema import EmployeeSchema, EmployeeViewSchema
-from business.employee_business import create_employee, delete_employee_by_id
+from business.employee_business import create_employee, delete_employee_by_id, update_employee_by_id
 from repositories.employee_repository import get_all_employees
 from routes.docs.employee_doc import (
     DELETE_EMPLOYEE_DESCRIPTION,
@@ -13,8 +13,11 @@ from routes.docs.employee_doc import (
     GET_EMPLOYEE_SUMMARY,
     POST_EMPLOYEE_DESCRIPTION,
     POST_EMPLOYEE_SUMMARY,
+    UPDATE_EMPLOYEE_DESCRIPTION,
+    UPDATE_EMPLOYEE_SUMMARY,
     delete_employee_responses,
     post_employee_responses,
+    update_employee_responses,
 )
 
 employee_bp = SmorestBlueprint(
@@ -76,3 +79,22 @@ def remove_employee(employee_id):
         - 404 (Not Found): Employee was not found.
     """
     return delete_employee_by_id(employee_id)
+
+
+@employee_bp.route('/employee/<int:employee_id>', methods=['PATCH'])
+@employee_bp.arguments(EmployeeSchema(partial=True))
+@employee_bp.response(200, EmployeeSchema)
+@employee_bp.doc(summary=UPDATE_EMPLOYEE_SUMMARY, description=UPDATE_EMPLOYEE_DESCRIPTION, responses=update_employee_responses)
+def update_employee(employee_data, employee_id):
+    """
+    Partially updates a employee.
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully updated the employee.
+        - 400 (Bad Request): Invalid fields.
+        - 404 (Not Found): Employee was not found.
+        - 409 (Conflict): Email already registered.
+    """
+
+    return update_employee_by_id(employee_id, **employee_data)

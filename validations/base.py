@@ -70,6 +70,8 @@ class BaseValidation:
         """
         cleaned = {}
 
+        print(payload)
+
         for field, expected_type in allowed_update_fields.items():
             value = payload.get(field)
             if value is None:
