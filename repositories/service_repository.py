@@ -51,7 +51,7 @@ def get_service(service_id: int) -> Optional[Service]:
         service_id (int): The service ID.
 
     Returns:
-        Service: The service found or None.
+        Optional[Service]: The service found or None.
     """
 
     return db.session.query(Service).filter_by(id=service_id).first()
@@ -65,7 +65,7 @@ def get_service_by_name(name: str) -> Optional[Service]:
         name (str): The service name.
 
     Returns:
-        Service: The service found or None.
+        Optional[Service]: The service found or None.
     """
 
     return db.session.query(Service.name).filter_by(name=name).first()

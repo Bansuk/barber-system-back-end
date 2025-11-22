@@ -9,6 +9,7 @@ from database.models.appointment import Appointment
 
 if TYPE_CHECKING:
     from ..database.models.appointment import Appointment
+    from ..database.models.service import Service
 
 
 def get_all_appointments() -> List[Appointment]:
@@ -41,7 +42,7 @@ def get_appointment(appointment_id: int) -> Optional[Appointment]:
         appointment_id (int): The appointment ID.
 
     Returns:
-         Optional[Appointment]: The appointment found or None.
+         Optional[Appointment] | None: The appointment found or None.
     """
 
     return db.session.query(Appointment).filter_by(id=appointment_id).first()
@@ -105,7 +106,7 @@ def delete_appointment(appointment: Appointment) -> bool:
 
 
 def add_appointment(date: str, customer_id: int,
-                    employee_id: int, appointments: List['Appointment']) -> Appointment:
+                    employee_id: int, services: List['Service']) -> Appointment:
     """
     Adds a new appointment to the database.
 
@@ -117,7 +118,7 @@ def add_appointment(date: str, customer_id: int,
     """
 
     try:
-        appointment = Appointment(date, appointments, employee_id, customer_id)
+        appointment = Appointment(date, services, employee_id, customer_id)
         db.session.add(appointment)
         db.session.commit()
 

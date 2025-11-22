@@ -18,7 +18,7 @@ def get_employee(employee_id: int) -> Optional[Employee]:
         employee_id (int): The employee id to search.
 
     Returns:
-        Employee: The employee found or None.
+        Optional[Employee]: The employee found or None.
     """
 
     return db.session.query(Employee).filter_by(id=employee_id).first()
@@ -32,7 +32,7 @@ def search_employee_email(email: str) -> Optional[str]:
         email (str): The employee email to search.
 
     Returns:
-        str: The email found or None.
+        Optional[str]: The email found or None.
     """
 
     return db.session.query(Employee.email).filter_by(email=email).first()
@@ -98,7 +98,7 @@ def update_employee(employee: Employee, **fields) -> Employee:
     Updates an existing employee in the database.
 
     Returns:
-        employee: Updated employee.
+        Employee: Updated employee.
 
     Raises:
         Exception: If the update fails.
