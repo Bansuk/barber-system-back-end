@@ -2,18 +2,18 @@
 Business module for Appointment entities.
 """
 
-from typing import List
 from datetime import datetime
-from flask_smorest import abort
+from typing import List
+from business.base import get_or_404
 from database.models.appointment import Appointment
-from repositories.appointment_repository import get_appointment
-from repositories.appointment_repository import add_appointment, delete_appointment, get_appointment, update_appointment
+from repositories.appointment_repository import add_appointment, delete_appointment, \
+    get_appointment, update_appointment
+from repositories.service_repository import get_service
 from validations.appointment_validation import AppointmentValidation
-from validations.base import BaseValidation
 
 
 def create_appointment(date: str, customer_id: int,
-                       employee_id: int, appointments_ids: List[int]) -> Appointment:
+                       employee_id: int, services_ids: List[int]) -> Appointment:
     """
     Creates a new appointment.
 
@@ -21,7 +21,7 @@ def create_appointment(date: str, customer_id: int,
         date (str): The appointment's date.
         customer_id (int): The customer's ID who booked the appointment.
         employee_id (int): The employee's ID who will execute the appointment.
-        appointments_ids (List[int]): The list of appointment IDs that will be executed.
+        services_ids (List[int]): The list of services IDs that will be executed.
 
     Returns:
         Appointment: Created appointment.
@@ -30,12 +30,11 @@ def create_appointment(date: str, customer_id: int,
     date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
 
     AppointmentValidation.validate_appointment(date,
-                                               customer_id, employee_id, appointments_ids)
+                                               customer_id, employee_id, services_ids)
 
-    appointments = [get_appointment(appointment_id)
-                    for appointment_id in appointments_ids]
+    services = [get_service(service_id) for service_id in services_ids]
 
-    return add_appointment(date, customer_id, employee_id, appointments)
+    return add_appointment(date, customer_id, employee_id, services)
 
 
 def delete_appointment_by_id(appointment_id: int) -> bool:
@@ -49,20 +48,12 @@ def delete_appointment_by_id(appointment_id: int) -> bool:
         bool: True if the appointment was successfully deleted.
 
     Raises:
-        werkzeug.exceptions.NotFound: If the appointment does not exist.
-        Exception: If an unexpected error occurs during deletion.
+        HTTPException: If appointment not found (404) or invalid ID (400).
     """
 
-    try:
-        BaseValidation.validate_positive_int(appointment_id, 'appointment')
+    appointment = get_or_404(get_appointment, appointment_id, 'appointment')
 
-        appointment = get_appointment(appointment_id)
-        if appointment is None:
-            abort(404, errors={'json': ['appointment not found.']})
-
-        return delete_appointment(appointment)
-    except Exception as error:
-        raise error
+    return delete_appointment(appointment)
 
 
 def update_appointment_by_id(appointment_id: int, **fields) -> Appointment:
@@ -71,7 +62,7 @@ def update_appointment_by_id(appointment_id: int, **fields) -> Appointment:
 
     Args:
         appointment_id: The appointment's unique identifier.
-        **fields: Fields to update (date, employee_id, service_ids).
+        **fields: Fields to update (date, customer_id, employee_id, service_ids).
 
     Returns:
         The updated appointment.
@@ -79,12 +70,7 @@ def update_appointment_by_id(appointment_id: int, **fields) -> Appointment:
     Raises:
         HTTPException: If appointment not found (404) or validation fails.
     """
-    BaseValidation.validate_positive_int(appointment_id, 'appointment')
-
-    appointment = get_appointment(appointment_id)
-    if appointment is None:
-        abort(404, errors={
-              'json': {'appointment': ['Appointment not found.']}})
+    appointment = get_or_404(get_appointment, appointment_id, 'appointment')
 
     validated = AppointmentValidation.validate_appointment_update(
         fields,

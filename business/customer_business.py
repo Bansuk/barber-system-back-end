@@ -2,9 +2,7 @@
 Business module for Customer entities.
 """
 
-from flask_smorest import abort
-from validations.customer_validation import CustomerValidation
-from validations.base import BaseValidation
+from business.base import get_or_404
 from database.models.customer import Customer
 from repositories.customer_repository import (
     add_customer,
@@ -12,6 +10,7 @@ from repositories.customer_repository import (
     get_customer,
     update_customer,
 )
+from validations.customer_validation import CustomerValidation
 
 
 def create_customer(name: str, email: str, phone_number: str) -> Customer:
@@ -21,6 +20,7 @@ def create_customer(name: str, email: str, phone_number: str) -> Customer:
     Args:
         name (str): The customer's name.
         email (str): The customer's email.
+        phone_number (str): The customer's cellphone number.
 
     Returns:
         Customer: Created customer.
@@ -42,20 +42,12 @@ def delete_customer_by_id(customer_id: int) -> bool:
         bool: True if the customer was successfully deleted.
 
     Raises:
-        werkzeug.exceptions.NotFound: If the customer does not exist.
-        Exception: If an unexpected error occurs during deletion.
+        HTTPException: If customer not found (404) or invalid ID (400).
     """
 
-    try:
-        BaseValidation.validate_positive_int(customer_id, 'customer')
+    customer = get_or_404(get_customer, customer_id, 'customer')
 
-        customer = get_customer(customer_id)
-        if customer is None:
-            abort(404, errors={'json': ['Customer not found.']})
-
-        return delete_customer(customer)
-    except Exception as error:
-        raise error
+    return delete_customer(customer)
 
 
 def update_customer_by_id(customer_id: int, **fields) -> Customer:
@@ -70,21 +62,12 @@ def update_customer_by_id(customer_id: int, **fields) -> Customer:
         Customer: Updated customer.
 
     Raises:
-        werkzeug.exceptions.NotFound: If the customer does not exist.
-        HTTPException: If validation fails.
-        Exception: If an unexpected error occurs during update.
+        HTTPException: If customer not found (404) or validation fails.
     """
 
-    try:
-        BaseValidation.validate_positive_int(customer_id, 'customer')
+    customer = get_or_404(get_customer, customer_id, 'customer')
 
-        customer = get_customer(customer_id)
-        if customer is None:
-            abort(404, errors={'json': ['Customer not found.']})
+    validated = CustomerValidation.validate_customer_update(
+        fields, current_customer_id=customer_id)
 
-        updates = CustomerValidation.validate_customer_update(
-            fields, current_customer_id=customer_id)
-
-        return update_customer(customer, **updates)
-    except Exception as error:
-        raise error
+    return update_customer(customer, **validated)

@@ -2,10 +2,9 @@
 Business module for Service entities.
 """
 
-from flask_smorest import abort
+from business.base import get_or_404
 from database.models.service import Service
 from repositories.service_repository import add_service, delete_service, get_service, update_service
-from validations.base import BaseValidation
 from validations.service_validation import ServiceValidation
 
 
@@ -23,7 +22,7 @@ def create_service(name: str, price: int) -> Service:
 
     ServiceValidation.validate_service(name, price)
 
-    add_service(name, price)
+    return add_service(name, price)
 
 
 def delete_service_by_id(service_id: int) -> bool:
@@ -37,20 +36,12 @@ def delete_service_by_id(service_id: int) -> bool:
         bool: True if the service was successfully deleted.
 
     Raises:
-        werkzeug.exceptions.NotFound: If the service does not exist.
-        Exception: If an unexpected error occurs during deletion.
+        HTTPException: If service not found (404) or invalid ID (400).
     """
 
-    try:
-        BaseValidation.validate_positive_int(service_id, 'service')
+    service = get_or_404(get_service, service_id, 'service')
 
-        service = get_service(service_id)
-        if service is None:
-            abort(404, errors={'json': ['Service not found.']})
-
-        return delete_service(service)
-    except Exception as error:
-        raise error
+    return delete_service(service)
 
 
 def update_service_by_id(service_id: int, **fields) -> Service:
@@ -65,21 +56,12 @@ def update_service_by_id(service_id: int, **fields) -> Service:
         service: Updated service.
 
     Raises:
-        werkzeug.exceptions.NotFound: If the service does not exist.
-        HTTPException: If validation fails.
-        Exception: If an unexpected error occurs during update.
+        HTTPException: If service not found (404) or validation fails.
     """
 
-    try:
-        BaseValidation.validate_positive_int(service_id, 'service')
+    service = get_or_404(get_service, service_id, 'service')
 
-        service = get_service(service_id)
-        if service is None:
-            abort(404, errors={'json': ['Service not found.']})
+    validated = ServiceValidation.validate_service_update(
+        fields, current_service_id=service_id)
 
-        updates = ServiceValidation.validate_service_update(
-            fields, current_service_id=service_id)
-
-        return update_service(service, **updates)
-    except Exception as error:
-        raise error
+    return update_service(service, **validated)
