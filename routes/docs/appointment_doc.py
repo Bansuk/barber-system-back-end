@@ -189,7 +189,7 @@ update_appointment_responses = {
     },
     404: {
         'description':
-        'Not Found: Serviços e/ou cliente e/ou funcionário(a) informados não foram encontrados.',
+        'Not Found: Serviços e/ou cliente e/ou funcionário(a) e/ou agendamento informados não foram encontrados.',
         'content': {
             'application/json': {
                 'schema': ErrorSchema,
@@ -197,6 +197,7 @@ update_appointment_responses = {
                     'code': 404,
                     'errors': {
                         'json': {
+                            'appointment': ['Provided appointment was not found.'],
                             'service': ['Provided services were not found.'],
                             'employee': ['Provided employee was not found.'],
                             'customer': ['Provided customer was not found.']

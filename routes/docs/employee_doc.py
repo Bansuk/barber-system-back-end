@@ -77,7 +77,8 @@ post_employee_responses = {
         '- `name` é obrigatório, mas não foi fornecido.\n'
         '- `email` é obrigatório, mas não foi fornecido.\n'
         '- `email`: o formato do email é inválido (deve ser um endereço de e-mail válido).\n'
-        '- `service`: deve haver ao menos um serviço cadastrado antes de criar um funcionário(a).\n\n',
+        '- `service`: deve haver ao menos um serviço cadastrado antes de criar'
+        'um funcionário(a).\n\n',
         'content': {
             'application/json': {
                 'schema': ErrorSchema,
@@ -87,7 +88,8 @@ post_employee_responses = {
                         'json': {
                             'name': ['Missing data for required field.'],
                             'email': ['Missing data for required field.'],
-                            'service': ['A service must be registered before registering an employee.']
+                            'service': ['A service must be registered before'
+                                        'registering an employee.']
                         }
                     },
                     'status': 'Unprocessable Entity'
