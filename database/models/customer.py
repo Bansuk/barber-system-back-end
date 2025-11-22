@@ -34,7 +34,8 @@ class Customer(db.Model):
     updated_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    def __init__(self, name: str, email: str, phone_number: str, appointments: List['Appointment']) -> None:
+    def __init__(self, name: str, email: str, phone_number: str,
+                 appointments: List['Appointment']) -> None:
         self.name = name
         self.email = email
         self.phone_number = phone_number
