@@ -35,7 +35,7 @@ def add_customer(customer_data):
 
     This endpoint processes a form submission (JSON) to create a new customer record.
 
-    Receives a JSON payload with 'name', and 'email',
+    Receives a JSON payload with 'name', 'email', 'phone_number',
     calls the business logic to create a customer,
     and returns an appropriate response.
 
@@ -77,6 +77,7 @@ def remove_customer(customer_id):
     Responses:
         JSON response:
         - 204 (No Content): Successfully deleted the customer.
+        - 400 (Bad Request): Invalid ID format.
         - 404 (Not Found): Customer was not found.
     """
     return delete_customer_by_id(customer_id)

@@ -4,7 +4,8 @@ Route module for Appointment routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.appointment_schema import AppointmentSchema, AppointmentViewSchema
-from business.appointment_business import create_appointment, delete_appointment_by_id, update_appointment_by_id
+from business.appointment_business import create_appointment, delete_appointment_by_id,  \
+    update_appointment_by_id
 from repositories.appointment_repository import get_all_appointments
 from routes.docs.appointment_doc import (
     DELETE_APPOINTMENT_DESCRIPTION,
@@ -35,7 +36,6 @@ def add_appointment(apointment_data):
 
     This endpoint processes a form submission (JSON) to create a new appointment record.
 
-
     Receives a JSON payload with 'date', 'customer_id', 'employee_id', and 'appointments_ids',
     calls the business logic to create an appointment,
     and returns an appropriate response.
@@ -44,6 +44,7 @@ def add_appointment(apointment_data):
         JSON response:
         - 201 (Created): Appointment created successfully.
         - 400 (Bad Request): Invalid body JSON format/Invalid date.
+        - 404 (Not Found): Provided value was not found.
         - 409 (Conflict): Date already booked.
         - 422 (Unprocessable Entity): Validation error.
     """
@@ -78,7 +79,8 @@ def remove_appointment(appointment_id):
     Responses:
         JSON response:
         - 204 (No Content): Successfully deleted the appointment.
-        - 404 (Not Found): appointment was not found.
+        - 400 (Bad Request): Invalid ID format.
+        - 404 (Not Found): Appointment was not found.
     """
     return delete_appointment_by_id(appointment_id)
 

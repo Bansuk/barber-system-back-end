@@ -189,7 +189,8 @@ update_appointment_responses = {
     },
     404: {
         'description':
-        'Not Found: Serviços e/ou cliente e/ou funcionário(a) e/ou agendamento informados não foram encontrados.',
+        'Not Found: Serviços e/ou cliente e/ou funcionário(a) e/ou agendamento informados'
+        'não foram encontrados.',
         'content': {
             'application/json': {
                 'schema': ErrorSchema,
@@ -224,31 +225,4 @@ update_appointment_responses = {
             }
         }
     },
-    422: {
-        'description':
-        'Validation Error: A requisição contém campos ausentes ou inválidos.\n\n'
-        '**Motivos Possíveis:**\n'
-        '- `date` é obrigatório, mas não foi fornecido.\n'
-        '- `customer_id` é obrigatório, mas não foi fornecido.\n'
-        '- `employee_id` é obrigatório, mas não foi fornecido.\n'
-        '- `services_ids` é obrigatório, mas não foi fornecido.\n\n',
-        'content': {
-            'application/json': {
-                'schema': ErrorSchema,
-                'example': {
-                    'code': 422,
-                    'errors': {
-                        'json': {
-                            'date': ['Missing data for required field.'],
-                            'customer_id': ['Missing data for required field.'],
-                            'employee_id': ['Missing data for required field.'],
-                            'services_ids': ['Missing data for required field.',
-                                             "Length must be between 1 and 10."]
-                        }
-                    },
-                    'status': 'Unprocessable Entity'
-                }
-            }
-        }
-    }
 }

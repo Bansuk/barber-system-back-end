@@ -35,7 +35,7 @@ def add_employee(employee_data):
 
     This endpoint processes a form submission (JSON) to create a new employee record.
 
-    Receives a JSON payload with 'name', 'email' and 
+    Receives a JSON payload with 'name', 'email', 'phone_number' and 
     'services, calls the business logic to create a 
     employee, and returns an appropriate response.
 
@@ -60,7 +60,7 @@ def get_employees():
 
     Returns:
         JSON response:
-        - 200: List of employees retrieved successfully.
+        - 200 (OK): List of employees retrieved successfully.
     """
 
     return get_all_employees()
@@ -76,6 +76,7 @@ def remove_employee(employee_id):
     Responses:
         JSON response:
         - 204 (No Content): Successfully deleted the employee.
+        - 400 (Bad Request): Invalid ID format.
         - 404 (Not Found): Employee was not found.
     """
     return delete_employee_by_id(employee_id)
