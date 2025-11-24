@@ -19,11 +19,12 @@ SERVICES_DESCRIPTION = 'Lista dos serviços executados pelo funcionário(a)'
 
 class EmployeeSchema(Schema):
     """
-    Schema for validating and deserializing  employee input data.
+    Schema for validating and deserializing employee input data.
 
     Attributes:
         name (str): The name of the employee (min 3, max 100 characters).
         email (str): The employee's email address.
+        phone_number (str): The employee's cellphone number.
         service_ids (List[int]): The list of services performed by the employee.
     """
 
@@ -50,6 +51,7 @@ class EmployeeViewSchema(Schema):
         id (int): The unique identifier of the employee.
         name (str): The name of the employee.
         email (str): The employee's email address.
+        phone_number (str): The employee's cellphone number.
         service_ids (List[int]): The list of services performed by the employee.
     """
 
@@ -68,5 +70,15 @@ class EmployeeViewSchema(Schema):
     )
 
     def get_service_ids(self, obj) -> list[int]:
-        """Extract service IDs from the employee's services relationship."""
+        """
+        Extract service IDs from the employee's related services.
+
+        Attributes:
+            obj (Employee): The employee instance whose service IDs
+                should be retrieved.
+
+        Returns:
+            list[int]: A list of IDs corresponding to the services
+                associated with the employee.
+        """
         return [service.id for service in obj.services]

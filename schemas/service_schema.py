@@ -1,5 +1,5 @@
 """
-Schema module for Employee entities.
+Schema module for Service entities.
 """
 
 from marshmallow import Schema, fields, validate
