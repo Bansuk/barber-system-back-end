@@ -2,9 +2,12 @@
 Validation module for Customer entities.
 """
 
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from repositories.customer_repository import search_customer_by_email
 from validations.base import BaseValidation
+
+if TYPE_CHECKING:
+    from ..database.models.customer import Customer
 
 ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str}
 
@@ -15,7 +18,7 @@ class CustomerValidation:
     """
 
     @staticmethod
-    def _find_customer_by_email(email: str) -> Optional[object]:
+    def _find_customer_by_email(email: str) -> Optional['Customer']:
         """
         Searches for the given email in the Customer database.
 
@@ -23,7 +26,7 @@ class CustomerValidation:
             email (str): The email to search for.
 
         Returns:
-            Optional[str]: The customer object if found, otherwise None.
+            Optional[Customer]: The customer object if found, otherwise None.
         """
 
         return search_customer_by_email(email)
@@ -52,16 +55,15 @@ class CustomerValidation:
         Validate update payload and check uniqueness constraints.
 
         Args:
-            fields: Raw update payload.
-            current_customer_id: ID of the customer being updated. If provided,
+            fields (dict): Raw update payload.
+            current_customer_id (Optional[int]): ID of the customer being updated. If provided,
                 allows the same email if it belongs to this customer.
 
         Returns:
-            Cleaned fields ready to apply.
+            dict: Cleaned fields ready to apply.
 
         Raises:
-            BadRequest: For invalid payloads.
-            HTTPException: For uniqueness conflicts (409 Conflict).
+            HTTPException: For uniqueness conflicts (409).
         """
         cleaned = BaseValidation.validate_update_payload(
             fields, allowed_update_fields=ALLOWED_UPDATE_FIELDS)
@@ -72,8 +74,8 @@ class CustomerValidation:
         existing = CustomerValidation._find_customer_by_email(cleaned['email'])
         is_conflict = (
             existing is not None
-            and (current_customer_id is None or getattr(existing, 'id', None) != current_customer_id)
-        )
+            and (current_customer_id is None or
+                 getattr(existing, 'id', None) != current_customer_id))
 
         if is_conflict:
             BaseValidation.abort_email_conflict()

@@ -1,10 +1,14 @@
-"""Validation module for Employee entities."""
+"""
+Validation module for Employee entities.
+"""
 
-from typing import Optional
-from flask_smorest import abort
+from typing import Optional, TYPE_CHECKING
 from repositories.service_repository import get_services_count, get_service
 from repositories.employee_repository import search_employee_email
 from validations.base import BaseValidation
+
+if TYPE_CHECKING:
+    from ..database.models.employee import Employee
 
 ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str, 'service_ids': list}
 
@@ -18,15 +22,15 @@ class EmployeeValidation:
     """
 
     @staticmethod
-    def _find_employee_by_email(email: str) -> Optional[object]:
+    def _find_employee_by_email(email: str) -> Optional['Employee']:
         """
         Search for an employee by email.
 
         Args:
-            email: The email to search for.
+            email (str): The email to search for.
 
         Returns:
-            The employee object if found, otherwise None.
+            Optional[Employee]: The employee object if found, otherwise None.
         """
         return search_employee_email(email)
 
@@ -39,11 +43,8 @@ class EmployeeValidation:
             HTTPException: If no services are registered (422).
         """
         if get_services_count() == 0:
-            abort(422, errors={
-                'json': {
-                    'service': ['A service must be registered before registering an employee.']
-                }
-            })
+            BaseValidation.abort_with_error(
+                422, 'A service must be registered before registering an employee.', 'service')
 
     @staticmethod
     def _get_validated_services(service_ids: list[int]) -> list:
@@ -51,23 +52,25 @@ class EmployeeValidation:
         Validate and retrieve Service objects for the given IDs.
 
         Args:
-            service_ids: List of service IDs to validate.
+            service_ids (list[int]): List of service IDs to validate.
 
         Returns:
-            List of Service objects.
+            list: List of Service objects.
 
         Raises:
             HTTPException: If any service is not found (404).
         """
         if not service_ids:
-            abort(404, errors={'json': {'service': ['Service not found.']}})
+            BaseValidation.abort_with_error(
+                404, 'Service not found.', 'service')
 
         services = []
         for service_id in service_ids:
             service = get_service(service_id=service_id)
             if service is None:
-                abort(404, errors={
-                      'json': {'service': ['Service not found.']}})
+                BaseValidation.abort_with_error(
+                    404, 'Service not found.', 'service')
+
             services.append(service)
 
         return services
@@ -78,8 +81,8 @@ class EmployeeValidation:
         Validate that an email is not already registered.
 
         Args:
-            email: The email to check.
-            exclude_id: Employee ID to exclude from the check (for updates).
+            email (str): The email to check.
+            exclude_id (Optional[int]): Employee ID to exclude from the check (for updates).
 
         Raises:
             HTTPException: If email is already registered (409).
@@ -99,11 +102,11 @@ class EmployeeValidation:
         Validate a new employee's data.
 
         Args:
-            email: The employee's email.
-            service_ids: List of service IDs to associate.
+            email (str): The employee's email.
+            service_ids (list[int]): List of service IDs to associate.
 
         Returns:
-            List of validated Service objects.
+            list: List of validated Service objects.
 
         Raises:
             HTTPException: If email is taken (409), no services exist (422),
@@ -122,15 +125,14 @@ class EmployeeValidation:
         Validate update payload and check uniqueness constraints.
 
         Args:
-            fields: Raw update payload.
-            current_employee_id: ID of the employee being updated. If provided,
+            fields (dict): Raw update payload.
+            current_employee_id (Optional[int]): ID of the employee being updated. If provided,
                 allows the same email if it belongs to this employee.
 
         Returns:
-            Cleaned fields ready to apply.
+            dict: Cleaned fields ready to apply.
 
         Raises:
-            BadRequest: For invalid payloads.
             HTTPException: For uniqueness conflicts (409) or invalid services (404).
         """
         cleaned = BaseValidation.validate_update_payload(
