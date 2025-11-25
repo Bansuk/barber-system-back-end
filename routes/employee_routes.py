@@ -84,7 +84,7 @@ def remove_employee(employee_id):
 
 @employee_bp.route('/employee/<int:employee_id>', methods=['PATCH'])
 @employee_bp.arguments(EmployeeSchema(partial=True))
-@employee_bp.response(200, EmployeeSchema)
+@employee_bp.response(200, EmployeeViewSchema)
 @employee_bp.doc(summary=UPDATE_EMPLOYEE_SUMMARY, description=UPDATE_EMPLOYEE_DESCRIPTION, responses=update_employee_responses)
 def update_employee(employee_data, employee_id):
     """
@@ -96,6 +96,7 @@ def update_employee(employee_data, employee_id):
         - 400 (Bad Request): Invalid fields.
         - 404 (Not Found): Employee was not found.
         - 409 (Conflict): Email already registered.
+        - 422 (Unprocessable Entity): Validation error.
     """
 
     return update_employee_by_id(employee_id, **employee_data)

@@ -51,7 +51,7 @@ class ServiceValidation:
         if not MIN_SERVICE_PRICE <= price <= MAX_SERVICE_PRICE:
             BaseValidation.abort_with_error(
                 422,  f'Price must be between {MIN_SERVICE_PRICE} '
-                'and {MAX_SERVICE_PRICE} cents.', 'price')
+                f'and {MAX_SERVICE_PRICE} cents.', 'price')
 
     @staticmethod
     def _validate_name_unique(name: str, exclude_id: Optional[int] = None) -> None:

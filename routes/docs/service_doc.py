@@ -158,5 +158,25 @@ update_service_responses = {
                 }
             }
         }
+    },
+    422: {
+        'description':
+        'Validation Error: A requisição contém campos inválidos.\n\n'
+        '**Motivos Possíveis:**\n'
+        '- `price`: o valor do serviço é inválido.\n\n',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 422,
+                    'errors': {
+                        'json': {
+                            'price': ['Invalid price.']
+                        }
+                    },
+                    'status': 'Unprocessable Entity'
+                }
+            }
+        }
     }
 }

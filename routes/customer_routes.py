@@ -85,7 +85,7 @@ def remove_customer(customer_id):
 
 @customer_bp.route('/customer/<int:customer_id>', methods=['PATCH'])
 @customer_bp.arguments(CustomerSchema(partial=True))
-@customer_bp.response(200, CustomerSchema)
+@customer_bp.response(200, CustomerViewSchema)
 @customer_bp.doc(summary=UPDATE_CUSTOMER_SUMMARY, description=UPDATE_CUSTOMER_DESCRIPTION, responses=update_customer_responses)
 def update_customer(customer_data, customer_id):
     """

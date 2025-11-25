@@ -26,7 +26,7 @@ class CustomerSchema(Schema):
     """
 
     name = fields.Str(required=True, metadata=NAME_METADATA,
-                      descriptiom=NAME_DESCRIPTION, validate=validate.Length(min=3, max=100))
+                      description=NAME_DESCRIPTION, validate=validate.Length(min=3, max=100))
     email = fields.Email(
         required=True, metadata=EMAIL_METADATA, description=EMAIL_DESCRIPTION)
     phone_number = fields.Str(

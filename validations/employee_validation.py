@@ -10,7 +10,8 @@ from validations.base import BaseValidation
 if TYPE_CHECKING:
     from ..database.models.employee import Employee
 
-ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str, 'service_ids': list}
+ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str,
+                         'phone_number': str, 'service_ids': list}
 
 
 class EmployeeValidation:

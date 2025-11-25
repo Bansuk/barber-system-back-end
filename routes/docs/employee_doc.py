@@ -87,7 +87,8 @@ post_employee_responses = {
                     'errors': {
                         'json': {
                             'name': ['Missing data for required field.'],
-                            'email': ['Missing data for required field.'],
+                            'email': ['Missing data for required field.',
+                                      'Not a valid email address.'],
                             'service': ['A service must be registered before'
                                         'registering an employee.']
                         }
@@ -177,6 +178,24 @@ update_employee_responses = {
                         }
                     },
                     'status': 'Conflict'
+                }
+            }
+        }
+    },
+    422: {
+        'description':
+        'Validation Error: O formato do eamil fornecido é inválido.\n\n',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 422,
+                    'errors': {
+                        'json': {
+                            'email': ['Not a valid email address.'],
+                        }
+                    },
+                    'status': 'Unprocessable Entity'
                 }
             }
         }

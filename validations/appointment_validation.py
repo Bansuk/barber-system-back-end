@@ -18,7 +18,7 @@ OPENING_TIME = time(9, 0)
 CLOSING_TIME = time(18, 0)
 
 ALLOWED_UPDATE_FIELDS = {'date': datetime,
-                         'employee_id': int, 'service_ids': list}
+                         'employee_id': int, 'services_ids': list}
 
 
 class AppointmentValidation:
@@ -280,9 +280,9 @@ class AppointmentValidation:
         else:
             employee_id = current_employee_id
 
-        if 'service_ids' in cleaned:
+        if 'services_ids' in cleaned:
             result['services'] = AppointmentValidation._get_validated_services(
-                cleaned['service_ids']
+                cleaned['services_ids']
             )
 
         if 'date' in cleaned:

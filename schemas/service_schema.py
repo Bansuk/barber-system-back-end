@@ -22,7 +22,7 @@ class ServiceSchema(Schema):
     """
 
     name = fields.Str(required=True, metadata=NAME_METADATA,
-                      descriptiom=NAME_DESCRIPTION, validate=validate.Length(min=3, max=100))
+                      description=NAME_DESCRIPTION, validate=validate.Length(min=3, max=100))
     price = fields.Int(
         required=True, metadata=PRICE_METADATA, description=PRICE_DESCRIPTION)
 
@@ -41,7 +41,7 @@ class ServiceViewSchema(Schema):
 
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True, metadata=NAME_METADATA,
-                      descriptiom=NAME_DESCRIPTION)
+                      description=NAME_DESCRIPTION)
     price = fields.Int(
         required=True, metadata=PRICE_METADATA, description=PRICE_DESCRIPTION)
     employees = fields.List(

@@ -9,7 +9,7 @@ from validations.base import BaseValidation
 if TYPE_CHECKING:
     from ..database.models.customer import Customer
 
-ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str}
+ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str, 'phone_number': str}
 
 
 class CustomerValidation:

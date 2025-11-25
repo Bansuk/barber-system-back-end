@@ -62,9 +62,23 @@ class AppointmentViewSchema(Schema):
     date = fields.Str(required=True)
     customer_id = fields.Int()
     employee_id = fields.Int()
-    services_ids = fields.List(
-        fields.Pluck('ServiceViewSchema', 'id'),
-        required=True,
+    service_ids = fields.Method(
+        'get_service_ids',
         metadata=SERVICES_METADATA,
         description=SERVICES_DESCRIPTION,
+        dump_only=True
     )
+
+    def get_service_ids(self, obj) -> list[int]:
+        """
+        Extract service IDs from the employee's related services.
+
+        Attributes:
+            obj (Employee): The employee instance whose service IDs
+                should be retrieved.
+
+        Returns:
+            list[int]: A list of IDs corresponding to the services
+                associated with the employee.
+        """
+        return [service.id for service in obj.services]

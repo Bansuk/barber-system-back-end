@@ -87,7 +87,7 @@ def remove_appointment(appointment_id):
 
 @appointment_bp.route('/appointment/<int:appointment_id>', methods=['PATCH'])
 @appointment_bp.arguments(AppointmentSchema(partial=True))
-@appointment_bp.response(200, AppointmentSchema)
+@appointment_bp.response(200, AppointmentViewSchema)
 @appointment_bp.doc(summary=UPDATE_APPOINTMENT_SUMMARY, description=UPDATE_APPOINTMENT_DESCRIPTION, responses=update_appointment_responses)
 def update_appointment(appointment_data, appointment_id):
     """
