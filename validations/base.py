@@ -4,6 +4,7 @@ Validation module for all entities.
 
 from typing import Any
 from flask_smorest import abort
+from services.numverify import NumVerify
 
 
 class BaseValidation:
@@ -57,6 +58,28 @@ class BaseValidation:
             409, 'Email already registered.', 'email')
 
     @staticmethod
+    def abort_phone_number_conflict() -> None:
+        """
+        Abort with a 409 Conflict error for duplicate phone number.
+
+        Raises:
+            HTTPException: Always raises a 409 Conflict.
+        """
+        BaseValidation.abort_with_error(
+            409, 'Phone number already registered.', 'phone_number')
+
+    @staticmethod
+    def abort_invalid_phone_number() -> None:
+        """
+        Abort with a 400 Bad Request error for invalid phone number.
+
+        Raises:
+            HTTPException: Always raises a 400 Bad Request.
+        """
+        BaseValidation.abort_with_error(
+            400, 'The provided phone number is invalid.', 'phone_number')
+
+    @staticmethod
     def validate_update_payload(payload: dict, allowed_update_fields: dict[str, type]) -> dict:
         """
         Validate and clean the update payload.
@@ -87,3 +110,60 @@ class BaseValidation:
                 400, 'No valid fields to update.')
 
         return cleaned
+
+    @staticmethod
+    def _phone_number_pre_validation(phone_number: str) -> None:
+        if not isinstance(phone_number, str):
+            BaseValidation.abort_invalid_phone_number()
+
+        allowed = phone_number.startswith("+55") and phone_number[3:].isdigit()
+        only_digits = phone_number.isdigit()
+
+        if not (allowed or only_digits):
+            BaseValidation.abort_invalid_phone_number()
+
+        digits = phone_number.lstrip("+")
+        if digits.startswith("55"):
+            digits = digits[2:]
+
+        if len(digits) != 11:
+            BaseValidation.abort_invalid_phone_number()
+
+        ddd = digits[:2]
+        if not (ddd.isdigit() and 10 <= int(ddd) <= 99):
+            BaseValidation.abort_invalid_phone_number()
+
+    @staticmethod
+    def validate_brazilian_phone_number(phone_number: str) -> None:
+        """
+        Validate a Brazilian mobile phone number using the NumVerify API.
+
+        This method performs pre-validation on the input format, sends the number
+        for external API verification, and applies domain rules to ensure that:
+
+            - The number is valid
+            - The number belongs to Brazil (country_code = 'BR')
+            - The line type is a mobile phone
+
+        If any of these conditions fail, a validation error is raised through
+        `BaseValidation.abort_invalid_phone_number()`.
+
+        Args:
+            phone_number (str): The phone number to validate.
+
+        Raises:
+            HTTPError: If the external API request fails.
+            ValueError: If `phone_number` is malformed according to base validation rules.
+            CustomValidationError: Triggered when the number does not meet requirements.
+        """
+
+        BaseValidation._phone_number_pre_validation(phone_number)
+
+        response = NumVerify.validate_phone_number(phone_number)
+
+        if not (
+            response.get('valid') is True
+            and response.get('country_code') == 'BR'
+            and response.get('line_type') == 'mobile'
+        ):
+            BaseValidation.abort_invalid_phone_number()
