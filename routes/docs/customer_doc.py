@@ -68,8 +68,7 @@ post_customer_responses = {
         }
     },
     409: {
-        'description': 'Conflict: O email fornecido já está em uso. Por favor, '
-        'forneça um email diferente.',
+        'description': 'Conflict: O valor informado não está disponível.',
         'content': {
             'application/json': {
                 'schema': ErrorSchema,
@@ -77,7 +76,10 @@ post_customer_responses = {
                     'code': 409,
                     'errors': {
                         'json': {
-                            'email': ['Email already registered.']
+                            'email': ['Email already registered.'],
+                            "phone_number": [
+                                "Phone number already registered."
+                            ]
                         }
                     },
                     'status': 'Conflict'
@@ -144,8 +146,7 @@ update_customer_responses = {
         }
     },
     409: {
-        'description': 'Conflict: O email fornecido já está em uso. Por favor, '
-        'forneça um email diferente.',
+        'description': 'Conflict: O valor informado não está disponivel.',
         'content': {
             'application/json': {
                 'schema': ErrorSchema,
@@ -153,7 +154,10 @@ update_customer_responses = {
                     'code': 409,
                     'errors': {
                         'json': {
-                            'email': ['Email already registered.']
+                            'email': ['Email already registered.'],
+                            "phone_number": [
+                                "Phone number already registered."
+                            ]
                         }
                     },
                     'status': 'Conflict'
