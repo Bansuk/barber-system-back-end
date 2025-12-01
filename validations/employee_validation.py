@@ -4,7 +4,7 @@ Validation module for Employee entities.
 
 from typing import Optional, TYPE_CHECKING
 from repositories.service_repository import get_services_count, get_service
-from repositories.employee_repository import search_employee_email
+from repositories.employee_repository import search_employee_email, search_employee_by_phone_number
 from validations.base import BaseValidation
 
 if TYPE_CHECKING:
@@ -34,6 +34,20 @@ class EmployeeValidation:
             Optional[Employee]: The employee object if found, otherwise None.
         """
         return search_employee_email(email)
+
+    @staticmethod
+    def _find_employee_by_phone_number(phone_number: str) -> Optional['Employee']:
+        """
+        Searches for the given phone number in the employee database.
+
+        Args:
+            phone_number (str): The phone number to search for.
+
+        Returns:
+            Optional[Employee]: The employee object if found, otherwise None.
+        """
+
+        return search_employee_by_phone_number(phone_number)
 
     @staticmethod
     def _validate_services_exist() -> None:
@@ -98,7 +112,7 @@ class EmployeeValidation:
         BaseValidation.abort_email_conflict()
 
     @staticmethod
-    def validate_employee(email: str, service_ids: list[int]) -> list:
+    def validate_employee(email: str, service_ids: list[int], phone_number: str) -> list:
         """
         Validate a new employee's data.
 
@@ -115,6 +129,10 @@ class EmployeeValidation:
         """
         EmployeeValidation._validate_email_unique(email)
         EmployeeValidation._validate_services_exist()
+        if EmployeeValidation._find_employee_by_phone_number(phone_number) is not None:
+            BaseValidation.abort_phone_number_conflict()
+
+        BaseValidation.validate_brazilian_phone_number(phone_number)
         return EmployeeValidation._get_validated_services(service_ids)
 
     @staticmethod

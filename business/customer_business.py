@@ -26,7 +26,7 @@ def create_customer(name: str, email: str, phone_number: str) -> Customer:
         Customer: Created customer.
     """
 
-    CustomerValidation.validate_customer(email)
+    CustomerValidation.validate_customer(email, phone_number)
 
     return add_customer(name, email, phone_number)
 

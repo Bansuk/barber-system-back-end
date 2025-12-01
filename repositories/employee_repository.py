@@ -38,6 +38,20 @@ def search_employee_email(email: str) -> Optional[str]:
     return db.session.query(Employee.email).filter_by(email=email).first()
 
 
+def search_employee_by_phone_number(phone_number: str) -> Optional[Employee]:
+    """
+    Retrieves a employee by phone number.
+
+    Args:
+        phone_number (str): The employee's phone number to search.
+
+    Returns:
+        Optional[Employee]: The matching employee or None.
+    """
+
+    return Employee.query.filter_by(phone_number=phone_number).first()
+
+
 def get_all_employees() -> List[Employee]:
     """
     Retrieves all registered employees.

@@ -35,6 +35,20 @@ def search_customer_by_email(email: str) -> Optional[Customer]:
     return Customer.query.filter_by(email=email).first()
 
 
+def search_customer_by_phone_number(phone_number: str) -> Optional[Customer]:
+    """
+    Retrieves a customer by phone number.
+
+    Args:
+        phone_number (str): The customer's phone number to search.
+
+    Returns:
+        Optional[Customer]: The matching customer or None.
+    """
+
+    return Customer.query.filter_by(phone_number=phone_number).first()
+
+
 def get_all_customers() -> List[Customer]:
     """
     Retrieves all registered customers.

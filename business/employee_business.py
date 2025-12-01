@@ -25,7 +25,7 @@ def create_employee(name: str, email: str, phone_number: str, service_ids: List[
         Employee: Created employee.
     """
 
-    EmployeeValidation.validate_employee(email, service_ids)
+    EmployeeValidation.validate_employee(email, service_ids, phone_number)
 
     services = get_services_by_services_ids(service_ids)
 

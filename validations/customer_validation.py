@@ -3,8 +3,9 @@ Validation module for Customer entities.
 """
 
 from typing import Optional, TYPE_CHECKING
-from repositories.customer_repository import search_customer_by_email
 from validations.base import BaseValidation
+from repositories.customer_repository import search_customer_by_email, \
+    search_customer_by_phone_number
 
 if TYPE_CHECKING:
     from ..database.models.customer import Customer
@@ -32,7 +33,21 @@ class CustomerValidation:
         return search_customer_by_email(email)
 
     @staticmethod
-    def validate_customer(email: str) -> None:
+    def _find_customer_by_phone_number(phone_number: str) -> Optional['Customer']:
+        """
+        Searches for the given phone number in the Customer database.
+
+        Args:
+            phone_number (str): The phone number to search for.
+
+        Returns:
+            Optional[Customer]: The customer object if found, otherwise None.
+        """
+
+        return search_customer_by_phone_number(phone_number)
+
+    @staticmethod
+    def validate_customer(email: str, phone_number: str) -> None:
         """
         Validates customer.
 
@@ -45,6 +60,11 @@ class CustomerValidation:
 
         if CustomerValidation._find_customer_by_email(email) is not None:
             BaseValidation.abort_email_conflict()
+
+        if CustomerValidation._find_customer_by_phone_number(phone_number) is not None:
+            BaseValidation.abort_phone_number_conflict()
+
+        BaseValidation.validate_brazilian_phone_number(phone_number)
 
     @staticmethod
     def validate_customer_update(
