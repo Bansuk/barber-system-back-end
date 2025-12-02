@@ -40,9 +40,7 @@ O **Barber System** é uma solução backend robusta para gerenciar todos os asp
 
 O sistema é composto por três módulos principais que se comunicam através de APIs REST:
 
-```
-
-```
+<img width="601" height="266" alt="Diagrama sem nome drawio" src="https://github.com/user-attachments/assets/c97c9fea-b850-41e0-8d10-dfec23dd0f84" />
 
 **Legenda:**
 - **Interface (Front-End)**: Aplicação Next.js que consome a API
