@@ -36,7 +36,7 @@ class Employee(db.Model):
     services = db.relationship(
         'Service', secondary=service_employee, back_populates='employees')
     appointments = db.relationship(
-        'Appointment', back_populates='employees')
+        'Appointment', back_populates='employee')
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))

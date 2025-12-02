@@ -99,7 +99,7 @@ class ServiceValidation:
         Validate update payload and check uniqueness constraints.
 
         Args:
-            fields )dict: Raw update payload.
+            fields (dict): Raw update payload.
             current_service_id (Optional[int]): ID of the service being updated. If provided,
                 allows the same name if it belongs to this service.
 

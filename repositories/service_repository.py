@@ -68,18 +68,21 @@ def get_service_by_name(name: str) -> Optional[Service]:
         Optional[Service]: The service found or None.
     """
 
-    return db.session.query(Service.name).filter_by(name=name).first()
+    return db.session.query(Service).filter_by(name=name).first()
 
 
 def delete_service(service: Service) -> bool:
     """
     Deletes the given service from the database.
 
+    Args:
+        service (Service): The service to delete.
+
     Returns:
         bool: True if the service was deleted successfully.
 
     Raises:
-        Exception: If the deletion fails.
+        SQLAlchemyError: If the deletion fails.
     """
 
     try:
@@ -87,7 +90,7 @@ def delete_service(service: Service) -> bool:
         db.session.commit()
 
         return True
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error
 
@@ -96,11 +99,15 @@ def add_service(name: str, price: int) -> Service:
     """
     Adds a new service to the database.
 
+    Args:
+        name (str): The service's name.
+        price (int): The service's price in cents.
+
     Returns:
         Service: Created service.
 
     Raises:
-        Exception: If the addition fails.
+        SQLAlchemyError: If the addition fails.
     """
 
     try:
@@ -110,7 +117,7 @@ def add_service(name: str, price: int) -> Service:
         db.session.commit()
 
         return service
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error
 
@@ -119,11 +126,15 @@ def update_service(service: Service, **fields) -> Service:
     """
     Updates an existing service in the database.
 
+    Args:
+        service (Service): The service to update.
+        **fields: Arbitrary keyword arguments representing fields to update.
+
     Returns:
         Service: Updated service.
 
     Raises:
-        Exception: If the update fails.
+        SQLAlchemyError: If the update fails.
     """
 
     try:
@@ -135,6 +146,6 @@ def update_service(service: Service, **fields) -> Service:
         db.session.commit()
 
         return service
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error

@@ -163,6 +163,16 @@ class EmployeeValidation:
                 cleaned['email'], exclude_id=current_employee_id
             )
 
+        if 'phone_number' in cleaned:
+            existing = EmployeeValidation._find_employee_by_phone_number(cleaned['phone_number'])
+            is_conflict = (
+                existing is not None
+                and (current_employee_id is None or
+                     getattr(existing, 'id', None) != current_employee_id))
+
+            if is_conflict:
+                BaseValidation.abort_phone_number_conflict()
+
         if 'service_ids' in cleaned:
             cleaned['services'] = EmployeeValidation._get_validated_services(
                 cleaned.pop('service_ids')

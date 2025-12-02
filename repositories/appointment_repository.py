@@ -88,11 +88,14 @@ def delete_appointment(appointment: Appointment) -> bool:
     """
     Deletes the given appointment from the database.
 
+    Args:
+        appointment (Appointment): The appointment to delete.
+
     Returns:
         bool: True if the appointment was deleted successfully.
 
     Raises:
-        Exception: If the deletion fails.
+        SQLAlchemyError: If the deletion fails.
     """
 
     try:
@@ -100,7 +103,7 @@ def delete_appointment(appointment: Appointment) -> bool:
         db.session.commit()
 
         return True
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error
 
@@ -110,11 +113,17 @@ def add_appointment(date: str, customer_id: int,
     """
     Adds a new appointment to the database.
 
+    Args:
+        date (str): The appointment's date.
+        customer_id (int): The customer's ID.
+        employee_id (int): The employee's ID.
+        services (List[Service]): List of services for the appointment.
+
     Returns:
         Appointment: Created appointment.
 
     Raises:
-        Exception: If the addition fails.
+        SQLAlchemyError: If the addition fails.
     """
 
     try:
@@ -123,7 +132,7 @@ def add_appointment(date: str, customer_id: int,
         db.session.commit()
 
         return appointment
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error
 
@@ -132,11 +141,15 @@ def update_appointment(appointment: Appointment, **fields) -> Appointment:
     """
     Updates an existing appointment in the database.
 
+    Args:
+        appointment (Appointment): The appointment to update.
+        **fields: Arbitrary keyword arguments representing fields to update.
+
     Returns:
         Appointment: Updated appointment.
 
     Raises:
-        Exception: If the update fails.
+        SQLAlchemyError: If the update fails.
     """
 
     try:
@@ -148,6 +161,6 @@ def update_appointment(appointment: Appointment, **fields) -> Appointment:
         db.session.commit()
 
         return appointment
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error

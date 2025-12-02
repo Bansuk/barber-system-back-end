@@ -32,7 +32,7 @@ def search_customer_by_email(email: str) -> Optional[Customer]:
         Optional[Customer]: The matching customer or None.
     """
 
-    return Customer.query.filter_by(email=email).first()
+    return db.session.query(Customer).filter_by(email=email).first()
 
 
 def search_customer_by_phone_number(phone_number: str) -> Optional[Customer]:
@@ -46,7 +46,7 @@ def search_customer_by_phone_number(phone_number: str) -> Optional[Customer]:
         Optional[Customer]: The matching customer or None.
     """
 
-    return Customer.query.filter_by(phone_number=phone_number).first()
+    return db.session.query(Customer).filter_by(phone_number=phone_number).first()
 
 
 def get_all_customers() -> List[Customer]:
@@ -64,11 +64,14 @@ def delete_customer(customer: Customer) -> bool:
     """
     Deletes the given customer from the database.
 
+    Args:
+        customer (Customer): The customer to delete.
+
     Returns:
         bool: True if the customer was deleted successfully.
 
     Raises:
-        Exception: If the deletion fails.
+        SQLAlchemyError: If the deletion fails.
     """
 
     try:
@@ -76,7 +79,7 @@ def delete_customer(customer: Customer) -> bool:
         db.session.commit()
 
         return True
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error
 
@@ -85,11 +88,16 @@ def add_customer(name: str, email: str, phone_number: str) -> Customer:
     """
     Adds a new customer to the database.
 
+    Args:
+        name (str): The customer's name.
+        email (str): The customer's email.
+        phone_number (str): The customer's phone number.
+
     Returns:
         Customer: Created customer.
 
     Raises:
-        Exception: If the addition fails.
+        SQLAlchemyError: If the addition fails.
     """
 
     try:
@@ -99,7 +107,7 @@ def add_customer(name: str, email: str, phone_number: str) -> Customer:
         db.session.commit()
 
         return customer
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error
 
@@ -108,11 +116,15 @@ def update_customer(customer: Customer, **fields) -> Customer:
     """
     Updates an existing customer in the database.
 
+    Args:
+        customer (Customer): The customer to update.
+        **fields: Arbitrary keyword arguments representing fields to update.
+
     Returns:
         Customer: Updated customer.
 
     Raises:
-        Exception: If the update fails.
+        SQLAlchemyError: If the update fails.
     """
 
     try:
@@ -124,6 +136,6 @@ def update_customer(customer: Customer, **fields) -> Customer:
         db.session.commit()
 
         return customer
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error

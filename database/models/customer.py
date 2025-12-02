@@ -29,7 +29,7 @@ class Customer(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     phone_number = db.Column(db.String(50), unique=True, nullable=False)
-    appointments = db.relationship('Appointment', back_populates='customers')
+    appointments = db.relationship('Appointment', back_populates='customer')
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))

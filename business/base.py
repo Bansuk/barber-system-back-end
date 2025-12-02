@@ -17,7 +17,7 @@ def get_or_404(getter, entity_id: int, name: str):
     Fetch an entity or abort with 404.
 
     Args:
-        getter: Function used to search fot the entity.
+        getter: Function used to search for the entity.
         entity_id: ID of the entity searched.
         name: Name of the entity.
 

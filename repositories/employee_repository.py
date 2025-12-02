@@ -24,18 +24,18 @@ def get_employee(employee_id: int) -> Optional[Employee]:
     return db.session.query(Employee).filter_by(id=employee_id).first()
 
 
-def search_employee_email(email: str) -> Optional[str]:
+def search_employee_email(email: str) -> Optional[Employee]:
     """
-    Retrieves an employee email.
+    Retrieves an employee by email.
 
     Args:
         email (str): The employee email to search.
 
     Returns:
-        Optional[str]: The email found or None.
+        Optional[Employee]: The employee found or None.
     """
 
-    return db.session.query(Employee.email).filter_by(email=email).first()
+    return db.session.query(Employee).filter_by(email=email).first()
 
 
 def search_employee_by_phone_number(phone_number: str) -> Optional[Employee]:
@@ -49,7 +49,7 @@ def search_employee_by_phone_number(phone_number: str) -> Optional[Employee]:
         Optional[Employee]: The matching employee or None.
     """
 
-    return Employee.query.filter_by(phone_number=phone_number).first()
+    return db.session.query(Employee).filter_by(phone_number=phone_number).first()
 
 
 def get_all_employees() -> List[Employee]:
@@ -67,11 +67,14 @@ def delete_employee(employee: Employee) -> bool:
     """
     Deletes the given employee from the database.
 
+    Args:
+        employee (Employee): The employee to delete.
+
     Returns:
         bool: True if the employee was deleted successfully.
 
     Raises:
-        Exception: If the deletion fails.
+        SQLAlchemyError: If the deletion fails.
     """
 
     try:
@@ -79,7 +82,7 @@ def delete_employee(employee: Employee) -> bool:
         db.session.commit()
 
         return True
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error
 
@@ -88,11 +91,17 @@ def add_employee(name: str, email: str, phone_number: str, services: List['Servi
     """
     Adds a new employee to the database.
 
+    Args:
+        name (str): The employee's name.
+        email (str): The employee's email.
+        phone_number (str): The employee's phone number.
+        services (List[Service]): List of services the employee can perform.
+
     Returns:
         Employee: Created employee.
 
     Raises:
-        Exception: If the addition fails.
+        SQLAlchemyError: If the addition fails.
     """
 
     try:
@@ -102,7 +111,7 @@ def add_employee(name: str, email: str, phone_number: str, services: List['Servi
         db.session.commit()
 
         return employee
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error
 
@@ -111,11 +120,15 @@ def update_employee(employee: Employee, **fields) -> Employee:
     """
     Updates an existing employee in the database.
 
+    Args:
+        employee (Employee): The employee to update.
+        **fields: Arbitrary keyword arguments representing fields to update.
+
     Returns:
         Employee: Updated employee.
 
     Raises:
-        Exception: If the update fails.
+        SQLAlchemyError: If the update fails.
     """
 
     try:
@@ -127,6 +140,6 @@ def update_employee(employee: Employee, **fields) -> Employee:
         db.session.commit()
 
         return employee
-    except Exception as error:
+    except SQLAlchemyError as error:
         db.session.rollback()
         raise error

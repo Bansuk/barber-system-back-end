@@ -34,10 +34,10 @@ class Appointment(db.Model):
         'Service', secondary=service_appointment, back_populates='appointments')
     employee_id = db.Column(db.Integer, db.ForeignKey(
         'employee.id'), nullable=False)
-    employees = db.relationship('Employee', back_populates='appointments')
+    employee = db.relationship('Employee', back_populates='appointments')
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customer.id'), nullable=False)
-    customers = db.relationship('Customer', back_populates='appointments')
+    customer = db.relationship('Customer', back_populates='appointments')
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))

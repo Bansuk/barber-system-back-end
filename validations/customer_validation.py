@@ -88,16 +88,24 @@ class CustomerValidation:
         cleaned = BaseValidation.validate_update_payload(
             fields, allowed_update_fields=ALLOWED_UPDATE_FIELDS)
 
-        if 'email' not in cleaned:
-            return cleaned
+        if 'email' in cleaned:
+            existing = CustomerValidation._find_customer_by_email(cleaned['email'])
+            is_conflict = (
+                existing is not None
+                and (current_customer_id is None or
+                     getattr(existing, 'id', None) != current_customer_id))
 
-        existing = CustomerValidation._find_customer_by_email(cleaned['email'])
-        is_conflict = (
-            existing is not None
-            and (current_customer_id is None or
-                 getattr(existing, 'id', None) != current_customer_id))
+            if is_conflict:
+                BaseValidation.abort_email_conflict()
 
-        if is_conflict:
-            BaseValidation.abort_email_conflict()
+        if 'phone_number' in cleaned:
+            existing = CustomerValidation._find_customer_by_phone_number(cleaned['phone_number'])
+            is_conflict = (
+                existing is not None
+                and (current_customer_id is None or
+                     getattr(existing, 'id', None) != current_customer_id))
+
+            if is_conflict:
+                BaseValidation.abort_phone_number_conflict()
 
         return cleaned
