@@ -5,7 +5,8 @@ Um sistema completo de gestão para barbearias desenvolvido com Flask, permitind
 ## 📋 Índice
 
 - [Sobre o Projeto](#-sobre-o-projeto)
-  - [Arquitetura](#arquitetura)
+  - [Arquitetura do Sistema](#arquitetura-do-sistema)
+  - [Arquitetura Interna (Back-End)](#arquitetura-interna-back-end)
 - [Funcionalidades](#-funcionalidades)
 - [Tecnologias Utilizadas](#️-tecnologias-utilizadas)
 - [Integração com NumVerify](#-integração-com-numverify)
@@ -35,7 +36,21 @@ Um sistema completo de gestão para barbearias desenvolvido com Flask, permitind
 
 O **Barber System** é uma solução backend robusta para gerenciar todos os aspectos operacionais de uma barbearia. O sistema oferece uma API REST completa com validações, documentação automática via OpenAPI/Swagger, e integração com serviços externos para validação de dados.
 
-### Arquitetura
+### Arquitetura do Sistema
+
+O sistema é composto por três módulos principais que se comunicam através de APIs REST:
+
+```
+
+```
+
+**Legenda:**
+- **Interface (Front-End)**: Aplicação Next.js que consome a API
+- **API (Back-End)**: Este projeto - API Flask com toda a lógica de negócio
+- **Banco de Dados**: SQLite para persistência de dados
+- **API Externa**: NumVerify para validação de números de telefone
+
+### Arquitetura Interna (Back-End)
 
 O projeto segue uma arquitetura em camadas bem definida:
 - **Routes**: Endpoints da API
