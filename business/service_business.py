@@ -8,21 +8,22 @@ from repositories.service_repository import add_service, delete_service, get_ser
 from validations.service_validation import ServiceValidation
 
 
-def create_service(name: str, price: int) -> Service:
+def create_service(name: str, price: int, status: str = 'available') -> Service:
     """
     Creates a new Service.
 
     Args:
         name (str): The service's name.
         price (int): The service's price in cents.
+        status (str): The service's status ('available' or 'unavailable').
 
     Returns:
         Service: Created service.
     """
 
-    ServiceValidation.validate_service(name, price)
+    ServiceValidation.validate_service(name, price, status)
 
-    return add_service(name, price)
+    return add_service(name, price, status)
 
 
 def delete_service_by_id(service_id: int) -> bool:

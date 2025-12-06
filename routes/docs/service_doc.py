@@ -71,7 +71,8 @@ post_service_responses = {
                         'json': {
                             'name': ['Missing data for required field.'],
                             'price': ['Missing data for required field.',
-                                      'Invalid price.']
+                                      'Invalid price.'],
+                            'status': ['Invalid status.']
                         }
                     },
                     'status': 'Unprocessable Entity'
@@ -174,7 +175,8 @@ update_service_responses = {
                     'code': 422,
                     'errors': {
                         'json': {
-                            'price': ['Invalid price.']
+                            'price': ['Invalid price.'],
+                            'status': ['Invalid status.']
                         }
                     },
                     'status': 'Unprocessable Entity'

@@ -96,13 +96,14 @@ def delete_service(service: Service) -> bool:
         raise error
 
 
-def add_service(name: str, price: int) -> Service:
+def add_service(name: str, price: int, status: str = 'available') -> Service:
     """
     Adds a new service to the database.
 
     Args:
         name (str): The service's name.
         price (int): The service's price in cents.
+        status (str): The service's status ('available' or 'unavailable').
 
     Returns:
         Service: Created service.
@@ -112,7 +113,7 @@ def add_service(name: str, price: int) -> Service:
     """
 
     try:
-        service = Service(name=name, price=price,
+        service = Service(name=name, price=price, status=status,
                           employees=[], appointments=[])
         db.session.add(service)
         db.session.commit()

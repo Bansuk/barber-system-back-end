@@ -11,8 +11,9 @@ if TYPE_CHECKING:
 
 MAX_SERVICE_PRICE = 10000
 MIN_SERVICE_PRICE = 2500
+ALLOWED_STATUS_VALUES = ['available', 'unavailable']
 
-ALLOWED_UPDATE_FIELDS = {'name': str, 'price': int}
+ALLOWED_UPDATE_FIELDS = {'name': str, 'price': int, 'status': str}
 
 
 class ServiceValidation:
@@ -54,6 +55,21 @@ class ServiceValidation:
                 f'and {MAX_SERVICE_PRICE} cents.', 'price')
 
     @staticmethod
+    def _validate_status(status: str) -> None:
+        """
+        Validate that status is one of the allowed values.
+
+        Args:
+            status (str): The status value.
+
+        Raises:
+            HTTPException: If status is not valid (422).
+        """
+        if status not in ALLOWED_STATUS_VALUES:
+            BaseValidation.abort_with_error(
+                422, f'Status must be one of: {", ".join(ALLOWED_STATUS_VALUES)}.', 'status')
+
+    @staticmethod
     def _validate_name_unique(name: str, exclude_id: Optional[int] = None) -> None:
         """
         Validate that a service name is not already registered.
@@ -76,19 +92,21 @@ class ServiceValidation:
             409, 'Service already registered.', 'name')
 
     @staticmethod
-    def validate_service(name: str, price: int) -> None:
+    def validate_service(name: str, price: int, status: str = 'available') -> None:
         """
         Validate a new service's data.
 
         Args:
             name (str): The service's name.
             price (int): The service's price in cents.
+            status (str): The service's status.
 
         Raises:
-            HTTPException: If name is taken (409) or price is invalid (422).
+            HTTPException: If name is taken (409), price is invalid (422), or status is invalid (422).
         """
         ServiceValidation._validate_name_unique(name)
         ServiceValidation._validate_price_range(price)
+        ServiceValidation._validate_status(status)
 
     @staticmethod
     def validate_service_update(
@@ -120,5 +138,8 @@ class ServiceValidation:
 
         if 'price' in cleaned:
             ServiceValidation._validate_price_range(cleaned['price'])
+
+        if 'status' in cleaned:
+            ServiceValidation._validate_status(cleaned['status'])
 
         return cleaned
