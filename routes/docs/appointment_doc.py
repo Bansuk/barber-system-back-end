@@ -10,6 +10,10 @@ DELETE_APPOINTMENT_DESCRIPTION = 'Este endpoint apaga as informações de um age
 GET_APPOINTMENT_SUMMARY = 'Retorna a lista de todos os agendamentos cadatrados.'
 GET_APPOINTMENT_DESCRIPTION = 'Este endpoint retorna uma coleção de agendamentos cadastrados ' \
     'no formato JSON.'
+GET_APPOINTMENT_COUNT_SUMMARY = 'Retorna o número total de agendamentos cadastrados.'
+GET_APPOINTMENT_COUNT_DESCRIPTION = 'Este endpoint retorna a contagem total de agendamentos ' \
+    'registrados no sistema. Pode filtrar por período: `all` (todos), `past` (passados), ou ' \
+    '`upcoming` (próximos). Se nenhum período for especificado, retorna todos os agendamentos.'
 POST_APPOINTMENT_SUMMARY = 'Lida com a criação de um novo agendamento.'
 POST_APPOINTMENT_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de agendamento.'

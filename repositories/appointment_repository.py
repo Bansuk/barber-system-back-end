@@ -24,15 +24,26 @@ def get_all_appointments() -> List[Appointment]:
     return db.session.query(Appointment).all()
 
 
-def get_appointments_count() -> int:
+def get_appointments_count(period: Optional[str] = None) -> int:
     """
     Retrieves the number of registered appointments.
+
+    Args:
+        period (Optional[str]): Filter by time period ('all', 'past', 'upcoming').
+                                If None or 'all', returns all appointments.
 
     Returns:
         int: The total number of appointments.
     """
 
-    return db.session.query(Appointment).count()
+    query = db.session.query(Appointment)
+    
+    if period == 'past':
+        query = query.filter(Appointment.date < datetime.now())
+    elif period == 'upcoming':
+        query = query.filter(Appointment.date >= datetime.now())
+    
+    return query.count()
 
 
 def get_appointment(appointment_id: int) -> Optional[Appointment]:

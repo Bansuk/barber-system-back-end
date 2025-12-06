@@ -6,10 +6,12 @@ from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.appointment_schema import AppointmentSchema, AppointmentViewSchema
 from business.appointment_business import create_appointment, delete_appointment_by_id,  \
     update_appointment_by_id
-from repositories.appointment_repository import get_all_appointments
+from repositories.appointment_repository import get_all_appointments, get_appointments_count
 from routes.docs.appointment_doc import (
     DELETE_APPOINTMENT_DESCRIPTION,
     DELETE_APPOINTMENT_SUMMARY,
+    GET_APPOINTMENT_COUNT_DESCRIPTION,
+    GET_APPOINTMENT_COUNT_SUMMARY,
     GET_APPOINTMENT_DESCRIPTION,
     GET_APPOINTMENT_SUMMARY,
     POST_APPOINTMENT_DESCRIPTION,
@@ -67,6 +69,33 @@ def get_appointments():
     """
 
     return get_all_appointments()
+
+
+@appointment_bp.route('/appointments/count', methods=['GET'])
+@appointment_bp.response(200)
+@appointment_bp.doc(summary=GET_APPOINTMENT_COUNT_SUMMARY, description=GET_APPOINTMENT_COUNT_DESCRIPTION)
+def get_appointment_count():
+    """
+    Retrieve the total number of appointments.
+
+    This endpoint returns the count of all registered appointments.
+    Accepts optional query parameter 'period' with values: 'all', 'past', or 'upcoming'.
+
+    Query Parameters:
+        period (str, optional): Filter appointments by time period.
+            - 'all' or omitted: All appointments
+            - 'past': Appointments before current time
+            - 'upcoming': Appointments from current time onwards
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully retrieved the appointment count.
+    """
+    from flask import request
+    
+    period = request.args.get('period', 'all')
+    
+    return get_appointments_count(period)
 
 
 @appointment_bp.route('/appointment/<int:appointment_id>', methods=['DELETE'])
