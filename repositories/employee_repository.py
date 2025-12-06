@@ -64,6 +64,17 @@ def get_all_employees() -> List[Employee]:
     return db.session.query(Employee).all()
 
 
+def count_employees() -> int:
+    """
+    Counts the total number of registered employees.
+
+    Returns:
+        int: The total count of employees.
+    """
+
+    return db.session.query(Employee).count()
+
+
 def delete_employee(employee: Employee) -> bool:
     """
     Deletes the given employee from the database.
