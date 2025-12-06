@@ -10,6 +10,9 @@ DELETE_CUSTOMER_DESCRIPTION = 'Este endpoint apaga as informações do cliente '
 GET_CUSTOMER_SUMMARY = 'Retorna a lista de todos os clientes cadatrados.'
 GET_CUSTOMER_DESCRIPTION = 'Este endpoint retorna uma coleção de cadastros de clientes ' \
     'no formato JSON.'
+GET_CUSTOMER_COUNT_SUMMARY = 'Retorna o número total de clientes cadastrados.'
+GET_CUSTOMER_COUNT_DESCRIPTION = 'Este endpoint retorna a contagem total de clientes ' \
+    'registrados no sistema.'
 POST_CUSTOMER_SUMMARY = 'Lida com a criação de um novo cliente.'
 POST_CUSTOMER_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de cliente.'

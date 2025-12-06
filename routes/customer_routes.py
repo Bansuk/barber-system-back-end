@@ -5,10 +5,12 @@ Route module for Customer routes.
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.customer_schema import CustomerSchema, CustomerViewSchema
 from business.customer_business import create_customer, delete_customer_by_id, update_customer_by_id
-from repositories.customer_repository import get_all_customers
+from repositories.customer_repository import count_customers, get_all_customers
 from routes.docs.customer_doc import (
     DELETE_CUSTOMER_DESCRIPTION,
     DELETE_CUSTOMER_SUMMARY,
+    GET_CUSTOMER_COUNT_DESCRIPTION,
+    GET_CUSTOMER_COUNT_SUMMARY,
     GET_CUSTOMER_DESCRIPTION,
     GET_CUSTOMER_SUMMARY,
     POST_CUSTOMER_DESCRIPTION,
@@ -65,6 +67,23 @@ def get_customers():
     """
 
     return get_all_customers()
+
+
+@customer_bp.route('/customers/count', methods=['GET'])
+@customer_bp.response(200)
+@customer_bp.doc(summary=GET_CUSTOMER_COUNT_SUMMARY, description=GET_CUSTOMER_COUNT_DESCRIPTION)
+def get_customer_count():
+    """
+    Retrieve the total number of customers.
+
+    This endpoint returns the count of all registered customers.
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully retrieved the customer count.
+    """
+
+    return count_customers()
 
 
 @customer_bp.route('/customer/<int:customer_id>', methods=['DELETE'])

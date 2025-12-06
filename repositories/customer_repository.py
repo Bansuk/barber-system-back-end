@@ -61,6 +61,17 @@ def get_all_customers() -> List[Customer]:
     return db.session.query(Customer).all()
 
 
+def count_customers() -> int:
+    """
+    Counts the total number of registered customers.
+
+    Returns:
+        int: The total count of customers.
+    """
+
+    return db.session.query(Customer).count()
+
+
 def delete_customer(customer: Customer) -> bool:
     """
     Deletes the given customer from the database.
