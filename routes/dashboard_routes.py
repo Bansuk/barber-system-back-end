@@ -37,7 +37,7 @@ def get_dashboard_stats():
     return {
         'customers': count_customers(),
         'employees': count_employees(),
-        'services': get_services_count(),
+        'services': get_services_count('available'),
         'appointments': {
             'total': get_appointments_count('all'),
             'past': get_appointments_count('past'),

@@ -12,7 +12,8 @@ GET_SERVICE_DESCRIPTION = 'Este endpoint retorna uma coleção de serviços cada
     'no formato JSON.'
 GET_SERVICE_COUNT_SUMMARY = 'Retorna o número total de serviços cadastrados.'
 GET_SERVICE_COUNT_DESCRIPTION = 'Este endpoint retorna a contagem total de serviços ' \
-    'registrados no sistema.'
+    'registrados no sistema. Pode filtrar por status: `available` (disponíveis) ou ' \
+    '`unavailable` (indisponíveis). Se nenhum status for especificado, retorna todos os serviços.'
 POST_SERVICE_SUMMARY = 'Lida com a criação de um novo serviço.'
 POST_SERVICE_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de serviço.'

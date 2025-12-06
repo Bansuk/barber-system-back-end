@@ -2,6 +2,7 @@
 Route module for Service routes.
 """
 
+from flask import request
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.service_schema import ServiceSchema, ServiceViewSchema
 from business.service_business import create_service, delete_service_by_id, update_service_by_id
@@ -72,19 +73,38 @@ def get_services():
 
 @service_bp.route('/services/count', methods=['GET'])
 @service_bp.response(200)
-@service_bp.doc(summary=GET_SERVICE_COUNT_SUMMARY, description=GET_SERVICE_COUNT_DESCRIPTION)
+@service_bp.doc(
+    summary=GET_SERVICE_COUNT_SUMMARY, 
+    description=GET_SERVICE_COUNT_DESCRIPTION,
+    parameters=[{
+        'name': 'status',
+        'in': 'query',
+        'schema': {'type': 'string', 'enum': ['available', 'unavailable']},
+        'required': False,
+        'description': 'Filtra serviços pelo status: available (disponíveis) or unavailable (indisponíveis)'
+    }]
+)
 def get_service_count():
     """
     Retrieve the total number of services.
 
     This endpoint returns the count of all registered services.
+    Accepts optional query parameter 'status' with values: 'available' or 'unavailable'.
+
+    Query Parameters:
+        status (str, optional): Filter services by status.
+            - 'available': Available services
+            - 'unavailable': Unavailable services
+            - omitted: All services
 
     Responses:
         JSON response:
         - 200 (OK): Successfully retrieved the service count.
     """
-
-    return get_services_count()
+    
+    status = request.args.get('status')
+    
+    return get_services_count(status)
 
 
 @service_bp.route('/service/<int:service_id>', methods=['DELETE'])

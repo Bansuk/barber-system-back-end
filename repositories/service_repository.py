@@ -33,15 +33,24 @@ def get_services_by_services_ids(services_ids: List[int]) -> List[Service]:
     return db.session.query(Service).filter(Service.id.in_(services_ids)).all()
 
 
-def get_services_count() -> int:
+def get_services_count(status: Optional[str] = None) -> int:
     """
     Retrieves the number of registered services.
+
+    Args:
+        status (Optional[str]): Filter by service status ('available' or 'unavailable').
+                                If None, returns all services.
 
     Returns:
         int: The total number of services.
     """
 
-    return db.session.query(Service).count()
+    query = db.session.query(Service)
+    
+    if status:
+        query = query.filter(Service.status == status)
+    
+    return query.count()
 
 
 def get_service(service_id: int) -> Optional[Service]:
