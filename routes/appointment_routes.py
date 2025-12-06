@@ -73,7 +73,17 @@ def get_appointments():
 
 @appointment_bp.route('/appointments/count', methods=['GET'])
 @appointment_bp.response(200)
-@appointment_bp.doc(summary=GET_APPOINTMENT_COUNT_SUMMARY, description=GET_APPOINTMENT_COUNT_DESCRIPTION)
+@appointment_bp.doc(
+    summary=GET_APPOINTMENT_COUNT_SUMMARY, 
+    description=GET_APPOINTMENT_COUNT_DESCRIPTION,
+    parameters=[{
+        'name': 'period',
+        'in': 'query',
+        'schema': {'type': 'string', 'enum': ['all', 'past', 'upcoming'], 'default': 'all'},
+        'required': False,
+        'description': 'Filter appointments by time period: all (todos), past (passados), or upcoming (próximos)'
+    }]
+)
 def get_appointment_count():
     """
     Retrieve the total number of appointments.
