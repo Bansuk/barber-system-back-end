@@ -5,10 +5,12 @@ Route module for Service routes.
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.service_schema import ServiceSchema, ServiceViewSchema
 from business.service_business import create_service, delete_service_by_id, update_service_by_id
-from repositories.service_repository import get_all_services
+from repositories.service_repository import get_all_services, get_services_count
 from routes.docs.service_doc import (
     DELETE_SERVICE_DESCRIPTION,
     DELETE_SERVICE_SUMMARY,
+    GET_SERVICE_COUNT_DESCRIPTION,
+    GET_SERVICE_COUNT_SUMMARY,
     GET_SERVICE_DESCRIPTION,
     GET_SERVICE_SUMMARY,
     POST_SERVICE_DESCRIPTION,
@@ -66,6 +68,23 @@ def get_services():
     """
 
     return get_all_services()
+
+
+@service_bp.route('/services/count', methods=['GET'])
+@service_bp.response(200)
+@service_bp.doc(summary=GET_SERVICE_COUNT_SUMMARY, description=GET_SERVICE_COUNT_DESCRIPTION)
+def get_service_count():
+    """
+    Retrieve the total number of services.
+
+    This endpoint returns the count of all registered services.
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully retrieved the service count.
+    """
+
+    return get_services_count()
 
 
 @service_bp.route('/service/<int:service_id>', methods=['DELETE'])

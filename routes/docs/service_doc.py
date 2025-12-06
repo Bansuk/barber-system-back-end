@@ -10,6 +10,9 @@ DELETE_SERVICE_DESCRIPTION = 'Este endpoint apaga as informações do serviço '
 GET_SERVICE_SUMMARY = 'Retorna a lista de todos os serviços cadatrados.'
 GET_SERVICE_DESCRIPTION = 'Este endpoint retorna uma coleção de serviços cadastrados ' \
     'no formato JSON.'
+GET_SERVICE_COUNT_SUMMARY = 'Retorna o número total de serviços cadastrados.'
+GET_SERVICE_COUNT_DESCRIPTION = 'Este endpoint retorna a contagem total de serviços ' \
+    'registrados no sistema.'
 POST_SERVICE_SUMMARY = 'Lida com a criação de um novo serviço.'
 POST_SERVICE_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de serviço.'
