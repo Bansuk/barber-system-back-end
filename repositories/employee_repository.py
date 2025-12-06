@@ -3,6 +3,7 @@ Repository module for Employee queries.
 """
 
 from typing import List, Optional, TYPE_CHECKING
+from sqlalchemy.exc import SQLAlchemyError
 from database.models.employee import Employee
 from database.db_setup import db
 

@@ -3,6 +3,7 @@ Repository module for Service queries.
 """
 
 from typing import List, Optional
+from sqlalchemy.exc import SQLAlchemyError
 from database.models.service import Service
 from database.db_setup import db
 

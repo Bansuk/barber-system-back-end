@@ -3,6 +3,7 @@ Repository module for Customer queries.
 """
 
 from typing import List, Optional
+from sqlalchemy.exc import SQLAlchemyError
 from database.models.customer import Customer
 from database.db_setup import db
 

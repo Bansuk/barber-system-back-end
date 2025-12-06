@@ -4,6 +4,7 @@ Repository module for Appointment queries.
 
 from typing import List, Optional, TYPE_CHECKING
 from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
 from database.db_setup import db
 from database.models.appointment import Appointment
 
