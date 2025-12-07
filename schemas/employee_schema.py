@@ -13,6 +13,9 @@ EMAIL_DESCRIPTION = 'E-mail do Funcionário(a)'
 PHONE_NUMBER_METADATA = {
     'example': '+5521999999999'}
 PHONE_NUMBER_DESCRIPTION = 'Número celular do Funcionário(a)'
+STATUS_METADATA = {
+    'example': 'available'}
+STATUS_DESCRIPTION = 'Status de disponibilidade do Funcionário(a) (available, vacation, sick_leave, unavailable)'
 SERVICES_METADATA = {'example': '[1]'}
 SERVICES_DESCRIPTION = 'Lista dos serviços executados pelo funcionário(a)'
 
@@ -34,6 +37,13 @@ class EmployeeSchema(Schema):
         required=True, metadata=EMAIL_METADATA, description=EMAIL_DESCRIPTION)
     phone_number = fields.Str(
         required=True, metadata=PHONE_NUMBER_METADATA, description=PHONE_NUMBER_DESCRIPTION)
+    status = fields.Str(
+        required=False,
+        metadata=STATUS_METADATA,
+        description=STATUS_DESCRIPTION,
+        validate=validate.OneOf(['available', 'vacation', 'sick_leave', 'unavailable']),
+        load_default='available'
+    )
     service_ids = fields.List(
         fields.Int(),
         required=True,
@@ -62,6 +72,11 @@ class EmployeeViewSchema(Schema):
         required=True, metadata=EMAIL_METADATA, description=EMAIL_DESCRIPTION)
     phone_number = fields.Str(
         required=True, metadata=PHONE_NUMBER_METADATA, description=PHONE_NUMBER_DESCRIPTION)
+    status = fields.Str(
+        required=True,
+        metadata=STATUS_METADATA,
+        description=STATUS_DESCRIPTION
+    )
     service_ids = fields.Method(
         'get_service_ids',
         metadata=SERVICES_METADATA,

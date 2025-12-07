@@ -99,7 +99,7 @@ def delete_employee(employee: Employee) -> bool:
         raise error
 
 
-def add_employee(name: str, email: str, phone_number: str, services: List['Service']) -> Employee:
+def add_employee(name: str, email: str, phone_number: str, services: List['Service'], status: str = 'available') -> Employee:
     """
     Adds a new employee to the database.
 
@@ -108,6 +108,7 @@ def add_employee(name: str, email: str, phone_number: str, services: List['Servi
         email (str): The employee's email.
         phone_number (str): The employee's phone number.
         services (List[Service]): List of services the employee can perform.
+        status (str): The employee's availability status.
 
     Returns:
         Employee: Created employee.
@@ -118,7 +119,7 @@ def add_employee(name: str, email: str, phone_number: str, services: List['Servi
 
     try:
         employee = Employee(name, email, phone_number,
-                            services, appointments=[])
+                            services, appointments=[], status=status)
         db.session.add(employee)
         db.session.commit()
 

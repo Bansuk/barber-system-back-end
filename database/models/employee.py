@@ -21,6 +21,7 @@ class Employee(db.Model):
         name (str): Name of the employee.
         email (str): Unique email of the employee.
         phone_number (str): Unique phone number of the employee.
+        status (str): Employment work status.
         services (list): List of services that the employee can perform.
         appointments (list): List of appointments assigned to the employee.
         created_at (datetime): Timestamp when the record was created.
@@ -33,6 +34,7 @@ class Employee(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     phone_number = db.Column(db.String(50), unique=True, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='available')
     services = db.relationship(
         'Service', secondary=service_employee, back_populates='employees')
     appointments = db.relationship(
@@ -42,9 +44,10 @@ class Employee(db.Model):
         db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     def __init__(self, name: str, email: str, phone_number: str, services: list['Service'],
-                 appointments: list['Appointment']) -> None:
+                 appointments: list['Appointment'], status: str = 'available') -> None:
         self.name = name
         self.email = email
         self.phone_number = phone_number
+        self.status = status
         self.services = services
         self.appointments = appointments

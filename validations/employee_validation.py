@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ..database.models.employee import Employee
 
 ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str,
-                         'phone_number': str, 'service_ids': list}
+                         'phone_number': str, 'status': str, 'service_ids': list}
 
 
 class EmployeeValidation:
@@ -136,6 +136,26 @@ class EmployeeValidation:
         return EmployeeValidation._get_validated_services(service_ids)
 
     @staticmethod
+    def _validate_status(status: str) -> None:
+        """
+        Validate that the status value is one of the allowed values.
+
+        Args:
+            status (str): The status to validate.
+
+        Raises:
+            HTTPException: If status is invalid (400).
+        """
+        allowed_statuses = ['available', 'vacation', 'sick_leave', 'unavailable']
+        if status not in allowed_statuses:
+            BaseValidation.abort_with_error(
+                400,
+                f"Invalid status. Must be one of: {', '.join(allowed_statuses)}",
+                'status'
+            )
+
+
+    @staticmethod
     def validate_employee_update(
         fields: dict,
         current_employee_id: Optional[int] = None
@@ -177,5 +197,8 @@ class EmployeeValidation:
             cleaned['services'] = EmployeeValidation._get_validated_services(
                 cleaned.pop('service_ids')
             )
+
+        if 'status' in cleaned:
+            EmployeeValidation._validate_status(cleaned['status'])
 
         return cleaned

@@ -11,7 +11,7 @@ from repositories.service_repository import get_services_by_services_ids
 from validations.employee_validation import EmployeeValidation
 
 
-def create_employee(name: str, email: str, phone_number: str, service_ids: List[int]) -> Employee:
+def create_employee(name: str, email: str, phone_number: str, service_ids: List[int], status: str = 'available') -> Employee:
     """
     Creates a new Employee.
 
@@ -20,6 +20,7 @@ def create_employee(name: str, email: str, phone_number: str, service_ids: List[
         email (str): The employee's email.
         phone_number (str): The employee's cellphone number.
         services (List[int]): The list of services performed by the employee.
+        status (str): The employee's availability status.
 
     Returns:
         Employee: Created employee.
@@ -29,7 +30,7 @@ def create_employee(name: str, email: str, phone_number: str, service_ids: List[
 
     services = get_services_by_services_ids(service_ids)
 
-    return add_employee(name, email, phone_number, services)
+    return add_employee(name, email, phone_number, services, status)
 
 
 def delete_employee_by_id(employee_id: int) -> bool:
