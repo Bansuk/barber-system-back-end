@@ -74,14 +74,15 @@ def get_services():
 @service_bp.route('/services/count', methods=['GET'])
 @service_bp.response(200)
 @service_bp.doc(
-    summary=GET_SERVICE_COUNT_SUMMARY, 
+    summary=GET_SERVICE_COUNT_SUMMARY,
     description=GET_SERVICE_COUNT_DESCRIPTION,
     parameters=[{
         'name': 'status',
         'in': 'query',
         'schema': {'type': 'string', 'enum': ['available', 'unavailable']},
         'required': False,
-        'description': 'Filtra serviços pelo status: available (disponíveis) or unavailable (indisponíveis)'
+        'description': 'Filtra serviços pelo status: available (disponíveis) '
+        'ou unavailable (indisponíveis)'
     }]
 )
 def get_service_count():
@@ -101,9 +102,9 @@ def get_service_count():
         JSON response:
         - 200 (OK): Successfully retrieved the service count.
     """
-    
+
     status = request.args.get('status')
-    
+
     return get_services_count(status)
 
 

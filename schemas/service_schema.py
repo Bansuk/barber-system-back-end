@@ -11,7 +11,7 @@ PRICE_METADATA = metadata = {
     'example': '4500'}
 PRICE_DESCRIPTION = 'Preço do Serviço em centavos (4500 é equivalente $45,00)'
 STATUS_METADATA = metadata = {
-    'example': 'Disponível'}
+    'example': 'available'}
 STATUS_DESCRIPTION = 'Status do Serviço (Disponível ou Indisponível)'
 
 
