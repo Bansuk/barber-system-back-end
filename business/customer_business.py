@@ -31,6 +31,23 @@ def create_customer(name: str, email: str, phone_number: str) -> Customer:
     return add_customer(name, email, phone_number)
 
 
+def get_customer_by_id(customer_id: int) -> Customer:
+    """
+    Retrieves a customer by its ID.
+
+    Args:
+        customer_id (int): The customer's unique identifier.
+
+    Returns:
+        Customer: The customer found.
+
+    Raises:
+        HTTPException: If customer not found (404) or invalid ID (400).
+    """
+
+    return get_or_404(get_customer, customer_id, 'customer')
+
+
 def delete_customer_by_id(customer_id: int) -> bool:
     """
     Deletes an existing customer by its ID.

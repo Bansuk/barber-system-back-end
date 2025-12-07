@@ -10,6 +10,9 @@ DELETE_CUSTOMER_DESCRIPTION = 'Este endpoint apaga as informações do cliente '
 GET_CUSTOMER_SUMMARY = 'Retorna a lista de todos os clientes cadatrados.'
 GET_CUSTOMER_DESCRIPTION = 'Este endpoint retorna uma coleção de cadastros de clientes ' \
     'no formato JSON.'
+GET_CUSTOMER_BY_ID_SUMMARY = 'Retorna as informações de um cliente específico.'
+GET_CUSTOMER_BY_ID_DESCRIPTION = 'Este endpoint retorna os dados de um cliente específico ' \
+    'baseado no ID fornecido.'
 GET_CUSTOMER_COUNT_SUMMARY = 'Retorna o número total de clientes cadastrados.'
 GET_CUSTOMER_COUNT_DESCRIPTION = 'Este endpoint retorna a contagem total de clientes ' \
     'registrados no sistema.'
@@ -20,6 +23,38 @@ UPDATE_CUSTOMER_SUMMARY = 'Lida com a atualização de um cliente cadatrado.'
 UPDATE_CUSTOMER_DESCRIPTION = 'Este endpoint processa o envio de um id e de um formulário (JSON) ' \
     'para atualizar um registro de cliente.'
 
+get_customer_by_id_responses = {
+    400: {
+        'description': 'Bad Request: O formato do id é inválido.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 400,
+                    'errors': {
+                        'json': ['Invalid customer id.']
+                    },
+                    'status': 'Bad Request'
+                }
+            }
+        }
+    },
+    404: {
+        'description': 'Not Found: O cliente informado não foi encontrado.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 404,
+                    'errors': {
+                        'json': ['Customer not found.']
+                    },
+                    'status': 'Not Found'
+                }
+            }
+        }
+    },
+}
 delete_customer_responses = {
     400: {
         'description': 'Bad Request: O formato do id é inválido.',

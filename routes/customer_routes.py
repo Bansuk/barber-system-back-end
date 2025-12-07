@@ -4,11 +4,13 @@ Route module for Customer routes.
 
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.customer_schema import CustomerSchema, CustomerViewSchema
-from business.customer_business import create_customer, delete_customer_by_id, update_customer_by_id
+from business.customer_business import create_customer, delete_customer_by_id, get_customer_by_id, update_customer_by_id
 from repositories.customer_repository import count_customers, get_all_customers
 from routes.docs.customer_doc import (
     DELETE_CUSTOMER_DESCRIPTION,
     DELETE_CUSTOMER_SUMMARY,
+    GET_CUSTOMER_BY_ID_DESCRIPTION,
+    GET_CUSTOMER_BY_ID_SUMMARY,
     GET_CUSTOMER_COUNT_DESCRIPTION,
     GET_CUSTOMER_COUNT_SUMMARY,
     GET_CUSTOMER_DESCRIPTION,
@@ -18,6 +20,7 @@ from routes.docs.customer_doc import (
     UPDATE_CUSTOMER_DESCRIPTION,
     UPDATE_CUSTOMER_SUMMARY,
     delete_customer_responses,
+    get_customer_by_id_responses,
     post_customer_responses,
     update_customer_responses,
 )
@@ -67,6 +70,24 @@ def get_customers():
     """
 
     return get_all_customers()
+
+
+@customer_bp.route('/customer/<int:customer_id>', methods=['GET'])
+@customer_bp.response(200, CustomerViewSchema)
+@customer_bp.doc(summary=GET_CUSTOMER_BY_ID_SUMMARY, description=GET_CUSTOMER_BY_ID_DESCRIPTION, responses=get_customer_by_id_responses)
+def get_customer_by_id(customer_id):
+    """
+    Retrieve a single customer by ID.
+
+    This endpoint returns a specific customer record in JSON format.
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully retrieved the customer.
+        - 404 (Not Found): Customer was not found.
+    """
+
+    return get_customer(customer_id)
 
 
 @customer_bp.route('/customers/count', methods=['GET'])
