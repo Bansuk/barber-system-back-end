@@ -2,6 +2,7 @@
 Route module for Employee routes.
 """
 
+from flask import request
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.employee_schema import EmployeeSchema, EmployeeViewSchema
 from business.employee_business import create_employee, delete_employee_by_id, update_employee_by_id
@@ -76,13 +77,20 @@ def get_employee_count():
     Retrieve the total number of employees.
 
     This endpoint returns the count of all registered employees.
+    Optionally filter by status using query parameter.
+
+    Query Parameters:
+        status (str, optional): Filter employees by status 
+                               (available, vacation, sick_leave, unavailable)
 
     Responses:
         JSON response:
         - 200 (OK): Successfully retrieved the employee count.
     """
-
-    return count_employees()
+    
+    status = request.args.get('status', None)
+    
+    return count_employees(status=status)
 
 
 @employee_bp.route('/employee/<int:employee_id>', methods=['DELETE'])

@@ -12,7 +12,8 @@ GET_EMPLOYEE_DESCRIPTION = 'Este endpoint retorna uma coleção de cadastros de 
     'no formato JSON.'
 GET_EMPLOYEE_COUNT_SUMMARY = 'Retorna o número total de funcionários(as) cadastrados(as).'
 GET_EMPLOYEE_COUNT_DESCRIPTION = 'Este endpoint retorna a contagem total de funcionários ' \
-    'registrados no sistema.'
+    'registrados no sistema. Opcionalmente, pode filtrar por status usando o parâmetro de ' \
+    'consulta "status" (available, vacation, sick_leave, unavailable).'
 POST_EMPLOYEE_SUMMARY = 'Lida com a criação de um novo funcionário(a).'
 POST_EMPLOYEE_DESCRIPTION = 'Este endpoint processa o envio de um formulário (JSON) ' \
     'para criar um novo registro de funcionário(a).'

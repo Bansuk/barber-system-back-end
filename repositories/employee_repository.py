@@ -64,15 +64,23 @@ def get_all_employees() -> List[Employee]:
     return db.session.query(Employee).all()
 
 
-def count_employees() -> int:
+def count_employees(status: Optional[str] = None) -> int:
     """
     Counts the total number of registered employees.
+
+    Args:
+        status (Optional[str]): Filter employees by status. If None, counts all employees.
 
     Returns:
         int: The total count of employees.
     """
 
-    return db.session.query(Employee).count()
+    query = db.session.query(Employee)
+    
+    if status is not None:
+        query = query.filter_by(status=status)
+    
+    return query.count()
 
 
 def delete_employee(employee: Employee) -> bool:
