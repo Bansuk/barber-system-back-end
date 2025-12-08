@@ -5,21 +5,25 @@ Route module for Service routes.
 from flask import request
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.service_schema import ServiceSchema, ServiceViewSchema
-from business.service_business import create_service, delete_service_by_id, update_service_by_id
+from business.service_business import create_service, delete_service_by_id, \
+    get_service_by_id, update_service_by_id
 from repositories.service_repository import get_all_services, get_services_count
 from routes.docs.service_doc import (
     DELETE_SERVICE_DESCRIPTION,
     DELETE_SERVICE_SUMMARY,
-    GET_SERVICE_COUNT_DESCRIPTION,
-    GET_SERVICE_COUNT_SUMMARY,
     GET_SERVICE_DESCRIPTION,
     GET_SERVICE_SUMMARY,
+    GET_SERVICE_BY_ID_DESCRIPTION,
+    GET_SERVICE_BY_ID_SUMMARY,
+    GET_SERVICE_COUNT_DESCRIPTION,
+    GET_SERVICE_COUNT_SUMMARY,
     POST_SERVICE_DESCRIPTION,
     POST_SERVICE_SUMMARY,
     UPDATE_SERVICE_DESCRIPTION,
     UPDATE_SERVICE_SUMMARY,
-    post_service_responses,
     delete_service_responses,
+    get_service_by_id_responses,
+    post_service_responses,
     update_service_responses
 )
 
@@ -69,6 +73,24 @@ def get_services():
     """
 
     return get_all_services()
+
+
+@service_bp.route('/service/<int:service_id>', methods=['GET'])
+@service_bp.response(200, ServiceViewSchema)
+@service_bp.doc(summary=GET_SERVICE_BY_ID_SUMMARY, description=GET_SERVICE_BY_ID_DESCRIPTION, responses=get_service_by_id_responses)
+def get_service(service_id):
+    """
+    Retrieve a single service by ID.
+
+    This endpoint returns a specific service record in JSON format.
+
+    Responses:
+        JSON response:
+        - 200 (OK): Successfully retrieved the service.
+        - 404 (Not Found): service was not found.
+    """
+
+    return get_service_by_id(service_id)
 
 
 @service_bp.route('/services/count', methods=['GET'])

@@ -10,6 +10,9 @@ DELETE_SERVICE_DESCRIPTION = 'Este endpoint apaga as informações do serviço '
 GET_SERVICE_SUMMARY = 'Retorna a lista de todos os serviços cadatrados.'
 GET_SERVICE_DESCRIPTION = 'Este endpoint retorna uma coleção de serviços cadastrados ' \
     'no formato JSON.'
+GET_SERVICE_BY_ID_SUMMARY = 'Retorna as informações de um serviço específico.'
+GET_SERVICE_BY_ID_DESCRIPTION = 'Este endpoint retorna os dados de um serviço específico ' \
+    'baseado no ID fornecido.'
 GET_SERVICE_COUNT_SUMMARY = 'Retorna o número total de serviços cadastrados.'
 GET_SERVICE_COUNT_DESCRIPTION = 'Este endpoint retorna a contagem total de serviços ' \
     'registrados no sistema. Pode filtrar por status: `available` (disponíveis) ou ' \
@@ -21,6 +24,38 @@ UPDATE_SERVICE_SUMMARY = 'Lida com a atualização de um serviço cadatrado.'
 UPDATE_SERVICE_DESCRIPTION = 'Este endpoint processa o envio de um id e de um formulário (JSON) ' \
     'para atualizar um registro de um serviço.'
 
+get_service_by_id_responses = {
+    400: {
+        'description': 'Bad Request: O formato do id é inválido.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 400,
+                    'errors': {
+                        'json': ['Invalid service id.']
+                    },
+                    'status': 'Bad Request'
+                }
+            }
+        }
+    },
+    404: {
+        'description': 'Not Found: O serviço informado não foi encontrado.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 404,
+                    'errors': {
+                        'json': ['Service not found.']
+                    },
+                    'status': 'Not Found'
+                }
+            }
+        }
+    },
+}
 post_service_responses = {
     400: {
         'description': 'Bad Request: O formato do corpo JSON é inválido.',
