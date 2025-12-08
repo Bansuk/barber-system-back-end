@@ -2,6 +2,7 @@
 Route module for Appointment routes.
 """
 
+from flask import request
 from flask_smorest import Blueprint as SmorestBlueprint
 from schemas.appointment_schema import AppointmentSchema, AppointmentViewSchema
 from business.appointment_business import create_appointment, delete_appointment_by_id,  \
@@ -74,14 +75,15 @@ def get_appointments():
 @appointment_bp.route('/appointments/count', methods=['GET'])
 @appointment_bp.response(200)
 @appointment_bp.doc(
-    summary=GET_APPOINTMENT_COUNT_SUMMARY, 
+    summary=GET_APPOINTMENT_COUNT_SUMMARY,
     description=GET_APPOINTMENT_COUNT_DESCRIPTION,
     parameters=[{
         'name': 'period',
         'in': 'query',
         'schema': {'type': 'string', 'enum': ['all', 'past', 'upcoming'], 'default': 'all'},
         'required': False,
-        'description': 'Filter appointments by time period: all (todos), past (passados), or upcoming (próximos)'
+        'description': 'Filtra agendamentos pelo perído de tempo: '
+        'all (todos), past (passados), ou upcoming (próximos)'
     }]
 )
 def get_appointment_count():
@@ -101,10 +103,9 @@ def get_appointment_count():
         JSON response:
         - 200 (OK): Successfully retrieved the appointment count.
     """
-    from flask import request
-    
+
     period = request.args.get('period', 'all')
-    
+
     return get_appointments_count(period)
 
 

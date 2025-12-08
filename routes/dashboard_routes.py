@@ -33,11 +33,11 @@ def get_dashboard_stats():
         JSON response:
         - 200 (OK): Successfully retrieved dashboard statistics.
     """
-    
+
     return {
-        'customers': count_customers(),
-        'employees': count_employees(),
-        'services': get_services_count('available'),
+        'totalCustomers': count_customers(),
+        'activeEmployees': count_employees('available'),
+        'availableServices': get_services_count('available'),
         'appointments': {
             'total': get_appointments_count('all'),
             'past': get_appointments_count('past'),

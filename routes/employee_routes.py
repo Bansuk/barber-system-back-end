@@ -71,7 +71,21 @@ def get_employees():
 
 @employee_bp.route('/employees/count', methods=['GET'])
 @employee_bp.response(200)
-@employee_bp.doc(summary=GET_EMPLOYEE_COUNT_SUMMARY, description=GET_EMPLOYEE_COUNT_DESCRIPTION)
+@employee_bp.doc(
+    summary=GET_EMPLOYEE_COUNT_SUMMARY,
+    description=GET_EMPLOYEE_COUNT_DESCRIPTION,
+    parameters=[{
+        'name': 'status',
+        'in': 'query',
+        'schema': {
+            'type': 'string',
+            'enum': ['available', 'vacation', 'sick_leave', 'unavailable']
+        },
+        'required': False,
+        'description': 'Filtra serviços pelo status: available (disponíveis), '
+        'vacation (férias), sick_leave (licença médica) ou unavailable (indisponíveis)'
+    }]
+)
 def get_employee_count():
     """
     Retrieve the total number of employees.
@@ -87,9 +101,9 @@ def get_employee_count():
         JSON response:
         - 200 (OK): Successfully retrieved the employee count.
     """
-    
+
     status = request.args.get('status', None)
-    
+
     return count_employees(status=status)
 
 
