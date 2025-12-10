@@ -56,25 +56,10 @@ def delete_service_by_id(service_id: int) -> bool:
         bool: True if the service was successfully deleted.
 
     Raises:
-        HTTPException: If service not found (404), invalid ID (400), or service is in use (409).
+        HTTPException: If service not found (404) or invalid ID (400).
     """
 
     service = get_or_404(get_service, service_id, 'service')
-
-    if service.employees:
-        BaseValidation.abort_with_error(
-            409,
-            f"Cannot delete service. It is associated with {len(service.employees)} employee(s).",
-            'service'
-        )
-    
-    future_appointments = [apt for apt in service.appointments if apt.date > datetime.now()]
-    if future_appointments:
-        BaseValidation.abort_with_error(
-            409,
-            f"Cannot delete service. It has {len(future_appointments)} future appointment(s).",
-            'service'
-        )
 
     return delete_service(service)
 

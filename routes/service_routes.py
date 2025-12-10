@@ -141,8 +141,7 @@ def remove_service(service_id):
         JSON response:
         - 204 (No Content): Successfully deleted the service.
         - 400 (Bad Request): Invalid ID format.
-        - 404 (Not Found): service was not found.
-        - 409 (Conflict): Service is associated with employees or has future appointments.
+        - 404 (Not Found): Service was not found.
     """
     return delete_service_by_id(service_id)
 

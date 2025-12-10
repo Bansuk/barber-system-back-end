@@ -46,18 +46,10 @@ def delete_employee_by_id(employee_id: int) -> bool:
         bool: True if the employee was successfully deleted.
 
     Raises:
-        HTTPException: If employee not found (404), invalid ID (400), or employee has future appointments (409).
+        HTTPException: If employee not found (404) or invalid ID (400).
     """
 
     employee = get_or_404(get_employee, employee_id, 'employee')
-
-    future_appointments = [apt for apt in employee.appointments if apt.date > datetime.now()]
-    if future_appointments:
-        BaseValidation.abort_with_error(
-            409,
-            f"Cannot delete employee. It has {len(future_appointments)} future appointment(s).",
-            'employee'
-        )
 
     return delete_employee(employee)
 

@@ -75,7 +75,7 @@ def get_customers():
 @customer_bp.route('/customer/<int:customer_id>', methods=['GET'])
 @customer_bp.response(200, CustomerViewSchema)
 @customer_bp.doc(summary=GET_CUSTOMER_BY_ID_SUMMARY, description=GET_CUSTOMER_BY_ID_DESCRIPTION, responses=get_customer_by_id_responses)
-def get_customer_by_id(customer_id):
+def get_customer(customer_id):
     """
     Retrieve a single customer by ID.
 
@@ -87,7 +87,7 @@ def get_customer_by_id(customer_id):
         - 404 (Not Found): Customer was not found.
     """
 
-    return get_customer(customer_id)
+    return get_customer_by_id(customer_id)
 
 
 @customer_bp.route('/customers/count', methods=['GET'])
@@ -119,7 +119,6 @@ def remove_customer(customer_id):
         - 204 (No Content): Successfully deleted the customer.
         - 400 (Bad Request): Invalid ID format.
         - 404 (Not Found): Customer was not found.
-        - 409 (Conflict): Customer has future appointments.
     """
     return delete_customer_by_id(customer_id)
 

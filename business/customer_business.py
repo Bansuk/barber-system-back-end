@@ -61,18 +61,10 @@ def delete_customer_by_id(customer_id: int) -> bool:
         bool: True if the customer was successfully deleted.
 
     Raises:
-        HTTPException: If customer not found (404), invalid ID (400), or customer has future appointments (409).
+        HTTPException: If customer not found (404) or invalid ID (400).
     """
 
     customer = get_or_404(get_customer, customer_id, 'customer')
-
-    future_appointments = [apt for apt in customer.appointments if apt.date > datetime.now()]
-    if future_appointments:
-        BaseValidation.abort_with_error(
-            409, 
-            f"Cannot delete customer. It has {len(future_appointments)} future appointment(s).",
-            'customer'
-        )
 
     return delete_customer(customer)
 
