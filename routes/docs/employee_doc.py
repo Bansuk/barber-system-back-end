@@ -136,6 +136,21 @@ delete_employee_responses = {
             }
         }
     },
+    409: {
+        'description': 'Conflict: O funcionário(a) não pode ser deletado pois possui agendamentos futuros.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 409,
+                    'errors': {
+                        'json': ['Cannot delete employee. It has future appointment(s).']
+                    },
+                    'status': 'Conflict'
+                }
+            }
+        }
+    },
 }
 update_employee_responses = {
     400: {

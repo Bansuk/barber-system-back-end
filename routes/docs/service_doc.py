@@ -113,6 +113,21 @@ delete_service_responses = {
             }
         }
     },
+    409: {
+        'description': 'Conflict: O serviço não pode ser deletado pois está associado a funcionários ou possui agendamentos futuros.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 409,
+                    'errors': {
+                        'json': ['Cannot delete service. It has associated employee(s).']
+                    },
+                    'status': 'Conflict'
+                }
+            }
+        }
+    },
 }
 update_service_responses = {
     400: {

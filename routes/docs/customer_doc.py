@@ -86,6 +86,21 @@ delete_customer_responses = {
             }
         }
     },
+    409: {
+        'description': 'Conflict: O cliente não pode ser deletado pois possui agendamentos futuros.',
+        'content': {
+            'application/json': {
+                'schema': ErrorSchema,
+                'example': {
+                    'code': 409,
+                    'errors': {
+                        'json': ['Cannot delete customer. It has future appointment(s).']
+                    },
+                    'status': 'Conflict'
+                }
+            }
+        }
+    },
 }
 post_customer_responses = {
     400: {

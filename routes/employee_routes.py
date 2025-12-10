@@ -119,6 +119,7 @@ def remove_employee(employee_id):
         - 204 (No Content): Successfully deleted the employee.
         - 400 (Bad Request): Invalid ID format.
         - 404 (Not Found): Employee was not found.
+        - 409 (Conflict): Employee has future appointments.
     """
     return delete_employee_by_id(employee_id)
 

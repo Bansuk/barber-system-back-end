@@ -119,6 +119,7 @@ def remove_customer(customer_id):
         - 204 (No Content): Successfully deleted the customer.
         - 400 (Bad Request): Invalid ID format.
         - 404 (Not Found): Customer was not found.
+        - 409 (Conflict): Customer has future appointments.
     """
     return delete_customer_by_id(customer_id)
 
