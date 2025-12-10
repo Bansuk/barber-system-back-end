@@ -28,6 +28,23 @@ def create_service(name: str, price: int, status: str = 'available') -> Service:
     return add_service(name, price, status)
 
 
+def get_service_by_id(service_id: int) -> Service:
+    """
+    Retrieves a service by its ID.
+
+    Args:
+        service_id (int): The service's unique identifier.
+
+    Returns:
+        service: The service found.
+
+    Raises:
+        HTTPException: If service not found (404) or invalid ID (400).
+    """
+
+    return get_or_404(get_service, service_id, 'service')
+
+
 def delete_service_by_id(service_id: int) -> bool:
     """
     Deletes an existing service by its ID.
