@@ -22,7 +22,7 @@ def get_all_services(status: Optional[str] = None) -> List[Service]:
 
     query = db.session.query(Service)
 
-    if status:
+    if status is not None:
         query = query.filter(Service.status == status)
 
     return query.all()
@@ -56,7 +56,7 @@ def get_services_count(status: Optional[str] = None) -> int:
 
     query = db.session.query(Service)
 
-    if status:
+    if status is not None:
         query = query.filter(Service.status == status)
 
     return query.count()

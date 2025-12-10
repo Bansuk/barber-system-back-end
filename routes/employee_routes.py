@@ -56,17 +56,38 @@ def add_employee(employee_data):
 
 @employee_bp.route('/employees', methods=['GET'])
 @employee_bp.response(200, EmployeeViewSchema(many=True))
-@employee_bp.doc(summary=GET_EMPLOYEE_SUMMARY, description=GET_EMPLOYEE_DESCRIPTION)
+@employee_bp.doc(
+    summary=GET_EMPLOYEE_SUMMARY,
+    description=GET_EMPLOYEE_DESCRIPTION,
+    parameters=[{
+        'name': 'status',
+        'in': 'query',
+        'schema': {
+            'type': 'string',
+            'enum': ['available', 'vacation', 'sick_leave', 'unavailable']
+        },
+        'required': False,
+        'description': 'Filtra serviços pelo status: available (disponíveis), '
+        'vacation (férias), sick_leave (licença médica) ou unavailable (indisponíveis)'
+    }]
+)
 def get_employees():
     """
     Retrieves a list of all employees.
+    Optionally filter by status using query parameter.
+
+    Query Parameters:
+        status (str, optional): Filter employees by status 
+                               (available, vacation, sick_leave, unavailable)
 
     Returns:
         JSON response:
         - 200 (OK): List of employees retrieved successfully.
     """
 
-    return get_all_employees()
+    status = request.args.get('status', None)
+
+    return get_all_employees(status)
 
 
 @employee_bp.route('/employees/count', methods=['GET'])

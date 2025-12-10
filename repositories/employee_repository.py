@@ -53,15 +53,23 @@ def search_employee_by_phone_number(phone_number: str) -> Optional[Employee]:
     return db.session.query(Employee).filter_by(phone_number=phone_number).first()
 
 
-def get_all_employees() -> List[Employee]:
+def get_all_employees(status: Optional[str] = None) -> List[Employee]:
     """
     Retrieves all registered employees.
+
+    Args:
+        status (Optional[str]): Filter employees by status. If None, counts all employees.
 
     Returns:
         List[Employee]: A list of registered employees.
     """
 
-    return db.session.query(Employee).all()
+    query = db.session.query(Employee)
+
+    if status is not None:
+        query = query.filter_by(status=status)
+
+    return query.all()
 
 
 def count_employees(status: Optional[str] = None) -> int:
@@ -76,10 +84,10 @@ def count_employees(status: Optional[str] = None) -> int:
     """
 
     query = db.session.query(Employee)
-    
+
     if status is not None:
         query = query.filter_by(status=status)
-    
+
     return query.count()
 
 

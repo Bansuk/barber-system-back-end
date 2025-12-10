@@ -9,7 +9,8 @@ DELETE_EMPLOYEE_DESCRIPTION = 'Este endpoint apaga as informações do(a) funcio
     'informado caso o(a) mesmo(a) seja encontrado(a).'
 GET_EMPLOYEE_SUMMARY = 'Retorna a lista de todos os funcionários cadatrados.'
 GET_EMPLOYEE_DESCRIPTION = 'Este endpoint retorna uma coleção de cadastros de funcionários ' \
-    'no formato JSON.'
+    'no formato JSON. Opcionalmente, pode filtrar por status usando o parâmetro de ' \
+    'consulta "status" (available, vacation, sick_leave, unavailable).'
 GET_EMPLOYEE_COUNT_SUMMARY = 'Retorna o número total de funcionários(as) cadastrados(as).'
 GET_EMPLOYEE_COUNT_DESCRIPTION = 'Este endpoint retorna a contagem total de funcionários ' \
     'registrados no sistema. Opcionalmente, pode filtrar por status usando o parâmetro de ' \
