@@ -8,15 +8,24 @@ from database.models.service import Service
 from database.db_setup import db
 
 
-def get_all_services() -> List[Service]:
+def get_all_services(status: Optional[str] = None) -> List[Service]:
     """
     Retrieves all registered services.
+
+    Args:
+    status (Optional[str]): Filter by service status ('available' or 'unavailable').
+                            If None, returns all services.
 
     Returns:
         List[Service]: A List of registered services.
     """
 
-    return db.session.query(Service).all()
+    query = db.session.query(Service)
+
+    if status:
+        query = query.filter(Service.status == status)
+
+    return query.all()
 
 
 def get_services_by_services_ids(services_ids: List[int]) -> List[Service]:
@@ -46,10 +55,10 @@ def get_services_count(status: Optional[str] = None) -> int:
     """
 
     query = db.session.query(Service)
-    
+
     if status:
         query = query.filter(Service.status == status)
-    
+
     return query.count()
 
 

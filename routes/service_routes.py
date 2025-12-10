@@ -60,7 +60,18 @@ def add_service(service_data):
 
 @service_bp.route('/services', methods=['GET'])
 @service_bp.response(200, ServiceViewSchema(many=True))
-@service_bp.doc(summary=GET_SERVICE_SUMMARY, description=GET_SERVICE_DESCRIPTION)
+@service_bp.doc(
+    summary=GET_SERVICE_SUMMARY,
+    description=GET_SERVICE_DESCRIPTION,
+    parameters=[{
+        'name': 'status',
+        'in': 'query',
+        'schema': {'type': 'string', 'enum': ['available', 'unavailable']},
+        'required': False,
+        'description': 'Filtra serviços pelo status: available (disponíveis) '
+        'ou unavailable (indisponíveis)'
+    }]
+)
 def get_services():
     """
     Retrieve a list of all services.
@@ -72,7 +83,9 @@ def get_services():
         - 200 (OK): Successfully retrieved the list of services.                                                     
     """
 
-    return get_all_services()
+    status = request.args.get('status')
+
+    return get_all_services(status)
 
 
 @service_bp.route('/service/<int:service_id>', methods=['GET'])

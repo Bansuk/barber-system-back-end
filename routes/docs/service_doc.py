@@ -9,7 +9,8 @@ DELETE_SERVICE_DESCRIPTION = 'Este endpoint apaga as informações do serviço '
     'informado caso o mesmo seja encontrado.'
 GET_SERVICE_SUMMARY = 'Retorna a lista de todos os serviços cadatrados.'
 GET_SERVICE_DESCRIPTION = 'Este endpoint retorna uma coleção de serviços cadastrados ' \
-    'no formato JSON.'
+    'no formato JSON. Pode filtrar por status: `available` (disponíveis) ou ' \
+    '`unavailable` (indisponíveis). Se nenhum status for especificado, retorna todos os serviços.'
 GET_SERVICE_BY_ID_SUMMARY = 'Retorna as informações de um serviço específico.'
 GET_SERVICE_BY_ID_DESCRIPTION = 'Este endpoint retorna os dados de um serviço específico ' \
     'baseado no ID fornecido.'
