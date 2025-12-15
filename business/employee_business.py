@@ -24,6 +24,9 @@ def create_employee(name: str, email: str, phone_number: str, service_ids: List[
 
     Returns:
         Employee: Created employee.
+
+    Raises:
+        HTTPException: If validation fails.
     """
 
     EmployeeValidation.validate_employee(email, service_ids, phone_number)
@@ -61,7 +64,7 @@ def update_employee_by_id(employee_id: int, **fields) -> Employee:
         **fields: Arbitrary keyword arguments representing fields to update.
 
     Returns:
-        Employee: Updated employee.
+        Employee: The updated employee.
 
     Raises:
         HTTPException: If appointment not found (404) or validation fails.

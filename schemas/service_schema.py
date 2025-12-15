@@ -22,7 +22,7 @@ class ServiceSchema(Schema):
     Attributes:
         name (str): The name of the service (min 3, max 100 characters).
         price (int): The service's price in cents.
-        status (str): The service's status ('Disponível' ou 'Indisponível').
+        status (str): The service's status.
     """
 
     name = fields.Str(required=True, metadata=NAME_METADATA,
@@ -43,6 +43,7 @@ class ServiceViewSchema(Schema):
         id (int): The unique identifier of the service.
         name (str): The name of the service.
         price (int): The price of the service in cents.
+        status (str): The service's status.
         employees (List[int]): The list of employees that can performe the service.
         appointment (List[int]): The list of appointment containing the service.
     """

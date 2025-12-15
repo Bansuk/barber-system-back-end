@@ -39,7 +39,7 @@ def add_employee(employee_data):
     This endpoint processes a form submission (JSON) to create a new employee record.
 
     Receives a JSON payload with 'name', 'email', 'phone_number' and 
-    'services, calls the business logic to create a 
+    'services', calls the business logic to create a 
     employee, and returns an appropriate response.
 
     Returns:

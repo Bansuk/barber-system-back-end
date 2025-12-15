@@ -25,6 +25,9 @@ def create_appointment(date: str, customer_id: int,
 
     Returns:
         Appointment: Created appointment.
+
+    Raises:
+        HTTPException: If validation fails.
     """
 
     date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
@@ -61,11 +64,11 @@ def update_appointment_by_id(appointment_id: int, **fields) -> Appointment:
     Update an existing appointment by its ID.
 
     Args:
-        appointment_id: The appointment's unique identifier.
-        **fields: Fields to update (date, customer_id, employee_id, service_ids).
+        appointment_id (int): The appointment's unique identifier.
+        **fields: Arbitrary keyword arguments representing fields to update.
 
     Returns:
-        The updated appointment.
+        Appointment: The updated appointment.
 
     Raises:
         HTTPException: If appointment not found (404) or validation fails.

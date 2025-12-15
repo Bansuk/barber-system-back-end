@@ -15,7 +15,8 @@ PHONE_NUMBER_METADATA = {
 PHONE_NUMBER_DESCRIPTION = 'Número celular do Funcionário(a)'
 STATUS_METADATA = {
     'example': 'available'}
-STATUS_DESCRIPTION = 'Status de disponibilidade do Funcionário(a) (available, vacation, sick_leave, unavailable)'
+STATUS_DESCRIPTION = 'Status de disponibilidade do Funcionário(a)' \
+    '(available, vacation, sick_leave, unavailable)'
 SERVICES_METADATA = {'example': '[1]'}
 SERVICES_DESCRIPTION = 'Lista dos serviços executados pelo funcionário(a)'
 
@@ -28,6 +29,7 @@ class EmployeeSchema(Schema):
         name (str): The name of the employee (min 3, max 100 characters).
         email (str): The employee's email address.
         phone_number (str): The employee's cellphone number.
+        status (str): The employee's status.
         service_ids (List[int]): The list of services performed by the employee.
     """
 
@@ -41,7 +43,8 @@ class EmployeeSchema(Schema):
         required=False,
         metadata=STATUS_METADATA,
         description=STATUS_DESCRIPTION,
-        validate=validate.OneOf(['available', 'vacation', 'sick_leave', 'unavailable']),
+        validate=validate.OneOf(
+            ['available', 'vacation', 'sick_leave', 'unavailable']),
         load_default='available'
     )
     service_ids = fields.List(
@@ -62,6 +65,7 @@ class EmployeeViewSchema(Schema):
         name (str): The name of the employee.
         email (str): The employee's email address.
         phone_number (str): The employee's cellphone number.
+        status (str): The service's status.
         service_ids (List[int]): The list of services performed by the employee.
     """
 

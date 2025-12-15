@@ -10,6 +10,9 @@ from validations.base import BaseValidation
 if TYPE_CHECKING:
     from ..database.models.employee import Employee
 
+ALLOWED_STATUS_VALUES = ['available',
+                         'vacation', 'sick_leave', 'unavailable']
+
 ALLOWED_UPDATE_FIELDS = {'name': str, 'email': str,
                          'phone_number': str, 'status': str, 'service_ids': list}
 
@@ -97,7 +100,7 @@ class EmployeeValidation:
 
         Args:
             email (str): The email to check.
-            exclude_id (Optional[int]): Employee ID to exclude from the check (for updates).
+            exclude_id (Optional[int]): Employee ID to exclude from the check.
 
         Raises:
             HTTPException: If email is already registered (409).
@@ -146,14 +149,13 @@ class EmployeeValidation:
         Raises:
             HTTPException: If status is invalid (400).
         """
-        allowed_statuses = ['available', 'vacation', 'sick_leave', 'unavailable']
-        if status not in allowed_statuses:
+
+        if status not in ALLOWED_STATUS_VALUES:
             BaseValidation.abort_with_error(
                 400,
-                f"Invalid status. Must be one of: {', '.join(allowed_statuses)}",
+                f"Invalid status. Must be one of: {', '.join(ALLOWED_STATUS_VALUES)}",
                 'status'
             )
-
 
     @staticmethod
     def validate_employee_update(
@@ -184,7 +186,8 @@ class EmployeeValidation:
             )
 
         if 'phone_number' in cleaned:
-            existing = EmployeeValidation._find_employee_by_phone_number(cleaned['phone_number'])
+            existing = EmployeeValidation._find_employee_by_phone_number(
+                cleaned['phone_number'])
             is_conflict = (
                 existing is not None
                 and (current_employee_id is None or

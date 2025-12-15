@@ -19,6 +19,7 @@ class Customer(db.Model):
         name (str): Name of the customer.
         email (str): Unique email of the customer.
         phone_number (str): Unique phone number of the customer.
+        appointments (List[Appointment]): Appointments associated with this customer.
         created_at (datetime): Timestamp when the record was created.
         updated_at (datetime): Timestamp when the record was last updated.
     """

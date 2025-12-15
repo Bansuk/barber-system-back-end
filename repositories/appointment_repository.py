@@ -37,12 +37,12 @@ def get_appointments_count(period: Optional[str] = None) -> int:
     """
 
     query = db.session.query(Appointment)
-    
+
     if period == 'past':
         query = query.filter(Appointment.date < datetime.now())
     elif period == 'upcoming':
         query = query.filter(Appointment.date >= datetime.now())
-    
+
     return query.count()
 
 
@@ -60,14 +60,18 @@ def get_appointment(appointment_id: int) -> Optional[Appointment]:
     return db.session.query(Appointment).filter_by(id=appointment_id).first()
 
 
-def get_customer_appointment(date: datetime, customer_id: int, exclude_appointment_id: Optional[int] = None) -> Optional[Appointment]:
+def get_customer_appointment(
+    date: datetime,
+    customer_id: int,
+    exclude_appointment_id: Optional[int] = None,
+) -> Optional[Appointment]:
     """
     Retrieves a customer appointment by date.
 
     Args:
         date (datetime): The appointment date.
         customer_id (int): The customer's ID.
-        exclude_appointment_id (Optional[int]): Appointment ID to exclude from the search (for updates).
+        exclude_appointment_id (Optional[int]): Appointment ID to exclude from the search.
 
     Returns:
          Optional[Appointment]: The appointment found or None.
@@ -77,21 +81,25 @@ def get_customer_appointment(date: datetime, customer_id: int, exclude_appointme
         Appointment.customer_id == customer_id,
         Appointment.date == date
     )
-    
+
     if exclude_appointment_id is not None:
         query = query.filter(Appointment.id != exclude_appointment_id)
-    
+
     return query.first()
 
 
-def get_employee_appointment(date: datetime, employee_id: int, exclude_appointment_id: Optional[int] = None) -> Optional[Appointment]:
+def get_employee_appointment(
+        date: datetime,
+        employee_id: int,
+        exclude_appointment_id: Optional[int] = None,
+) -> Optional[Appointment]:
     """
     Retrieves an employee appointment by date.
 
     Args:
         date (datetime): The appointment date.
         employee_id (int): The employee's ID.
-        exclude_appointment_id (Optional[int]): Appointment ID to exclude from the search (for updates).
+        exclude_appointment_id (Optional[int]): Appointment ID to exclude from the search.
 
     Returns:
          Optional[Appointment]: The appointment found or None.
@@ -101,10 +109,10 @@ def get_employee_appointment(date: datetime, employee_id: int, exclude_appointme
         Appointment.employee_id == employee_id,
         Appointment.date == date
     )
-    
+
     if exclude_appointment_id is not None:
         query = query.filter(Appointment.id != exclude_appointment_id)
-    
+
     return query.first()
 
 

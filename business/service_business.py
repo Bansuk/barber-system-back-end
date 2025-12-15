@@ -19,6 +19,9 @@ def create_service(name: str, price: int, status: str = 'available') -> Service:
 
     Returns:
         Service: Created service.
+
+    Raises:
+        HTTPException: If validation fails.
     """
 
     ServiceValidation.validate_service(name, price, status)
@@ -34,7 +37,7 @@ def get_service_by_id(service_id: int) -> Service:
         service_id (int): The service's unique identifier.
 
     Returns:
-        service: The service found.
+        Service: The service found.
 
     Raises:
         HTTPException: If service not found (404) or invalid ID (400).
@@ -71,7 +74,7 @@ def update_service_by_id(service_id: int, **fields) -> Service:
         **fields: Arbitrary keyword arguments representing fields to update.
 
     Returns:
-        service: Updated service.
+        Service: The updated service.
 
     Raises:
         HTTPException: If service not found (404) or validation fails.

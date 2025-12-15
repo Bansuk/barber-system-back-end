@@ -78,7 +78,7 @@ class AppointmentValidation:
             date (datetime): The appointment's date.
             employee_id (int): The employee's ID.
             customer_id (int): The customer's ID.
-            exclude_appointment_id (Optional[int]): Appointment ID to exclude from check (for updates).
+            exclude_appointment_id (Optional[int]): Appointment ID to exclude from check.
 
         Raises:
             HTTPException: If the time slot is already booked (409).
@@ -262,7 +262,7 @@ class AppointmentValidation:
             current_customer_id (int): ID of the customer (cannot be changed).
             current_employee_id (Optional[int]): Current employee ID (for availability check).
             current_date (Optional[datetime]): Current appointment date (for availability check).
-            appointment_id (Optional[int]): ID of the appointment being updated (to exclude from checks).
+            appointment_id (Optional[int]): ID of the appointment being updated.
 
         Returns:
             dict: Cleaned fields with validated entities ready to apply:

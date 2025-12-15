@@ -24,7 +24,7 @@ class NumVerify:
         provided parameters and returns the JSON response if successful.
 
         Args:
-            params (dict): A dictionary of query parameters to include
+            params (object): A dictionary of query parameters to include
                            in the API request.
 
         Returns:

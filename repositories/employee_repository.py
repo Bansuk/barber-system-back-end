@@ -19,7 +19,7 @@ def get_employee(employee_id: int) -> Optional[Employee]:
         employee_id (int): The employee id to search.
 
     Returns:
-        Optional[Employee]: The employee found or None.
+        Optional[Employee] | None: The employee found or None.
     """
 
     return db.session.query(Employee).filter_by(id=employee_id).first()
@@ -33,7 +33,7 @@ def search_employee_email(email: str) -> Optional[Employee]:
         email (str): The employee email to search.
 
     Returns:
-        Optional[Employee]: The employee found or None.
+        Optional[Employee] | None: The employee found or None.
     """
 
     return db.session.query(Employee).filter_by(email=email).first()
@@ -47,7 +47,7 @@ def search_employee_by_phone_number(phone_number: str) -> Optional[Employee]:
         phone_number (str): The employee's phone number to search.
 
     Returns:
-        Optional[Employee]: The matching employee or None.
+        Optional[Employee] | None: The matching employee or None.
     """
 
     return db.session.query(Employee).filter_by(phone_number=phone_number).first()
@@ -115,7 +115,13 @@ def delete_employee(employee: Employee) -> bool:
         raise error
 
 
-def add_employee(name: str, email: str, phone_number: str, services: List['Service'], status: str = 'available') -> Employee:
+def add_employee(
+        name: str,
+        email: str,
+        phone_number: str,
+        services: List['Service'],
+        status: str = 'available',
+) -> Employee:
     """
     Adds a new employee to the database.
 

@@ -16,7 +16,7 @@ def get_customer(customer_id: int) -> Optional[Customer]:
         customer_id (int): The customer's ID.
 
     Returns:
-        Optional[Customer]: The customer found or None.
+        Optional[Customer] | None: The customer found or None.
     """
 
     return db.session.query(Customer).filter_by(id=customer_id).first()
@@ -30,7 +30,7 @@ def search_customer_by_email(email: str) -> Optional[Customer]:
         email (str): The customer's email to search.
 
     Returns:
-        Optional[Customer]: The matching customer or None.
+        Optional[Customer] | None: The matching customer or None.
     """
 
     return db.session.query(Customer).filter_by(email=email).first()
@@ -44,7 +44,7 @@ def search_customer_by_phone_number(phone_number: str) -> Optional[Customer]:
         phone_number (str): The customer's phone number to search.
 
     Returns:
-        Optional[Customer]: The matching customer or None.
+        Optional[Customer] | None: The matching customer or None.
     """
 
     return db.session.query(Customer).filter_by(phone_number=phone_number).first()

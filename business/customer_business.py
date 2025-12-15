@@ -24,6 +24,9 @@ def create_customer(name: str, email: str, phone_number: str) -> Customer:
 
     Returns:
         Customer: Created customer.
+
+    Raises:
+        HTTPException: If validation fails.
     """
 
     CustomerValidation.validate_customer(email, phone_number)
@@ -76,7 +79,7 @@ def update_customer_by_id(customer_id: int, **fields) -> Customer:
         **fields: Arbitrary keyword arguments representing fields to update.
 
     Returns:
-        Customer: Updated customer.
+        Customer: The updated customer.
 
     Raises:
         HTTPException: If customer not found (404) or validation fails.
