@@ -33,7 +33,7 @@ appointment_bp = SmorestBlueprint(
 @appointment_bp.response(201, AppointmentViewSchema, description='Agendamento realizado com sucesso.')
 @appointment_bp.doc(summary=POST_APPOINTMENT_SUMMARY, description=POST_APPOINTMENT_DESCRIPTION,
                     responses=post_appointment_responses)
-def add_appointment(apointment_data):
+def add_appointment(appointment_data):
     """
     Handles the creation of a new appointment.
 
@@ -52,7 +52,7 @@ def add_appointment(apointment_data):
         - 422 (Unprocessable Entity): Validation error.
     """
 
-    return create_appointment(**apointment_data)
+    return create_appointment(**appointment_data)
 
 
 @appointment_bp.route('/appointments', methods=['GET'])

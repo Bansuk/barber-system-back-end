@@ -4,13 +4,13 @@ Schema module for Service entities.
 
 from marshmallow import Schema, fields, validate
 
-NAME_METADATA = metadata = {
+NAME_METADATA = {
     'example': 'Corte de Cabelo Masculino'}
 NAME_DESCRIPTION = 'Nome do Serviço'
-PRICE_METADATA = metadata = {
+PRICE_METADATA = {
     'example': '4500'}
 PRICE_DESCRIPTION = 'Preço do Serviço em centavos (4500 é equivalente $45,00)'
-STATUS_METADATA = metadata = {
+STATUS_METADATA = {
     'example': 'available'}
 STATUS_DESCRIPTION = 'Status do Serviço (Disponível ou Indisponível)'
 

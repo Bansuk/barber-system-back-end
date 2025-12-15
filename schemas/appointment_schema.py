@@ -4,18 +4,18 @@ Schema module for Appointment entities.
 
 from marshmallow import Schema, fields, validate
 
-DATE_METADATA = metadata = {
+DATE_METADATA = {
     'example': '2025-04-18 14:30:00'}
 DATE_DESCRIPTION = 'Dia e hora do agendamento. ' \
     '(Não pode ser no passado e nem a mais de 7 dias no futuro.)' \
     '(Horário selecionado deve estar entre 09:00 e 18:00.)'
-CUSTOMER_METADATA = metadata = {
+CUSTOMER_METADATA = {
     'example': 1}
 CUSTOMER_DESCRIPTION = 'ID do cliente que agendou o serviço.'
-EMPLOYEE_METADATA = metadata = {
+EMPLOYEE_METADATA = {
     'example': 1}
 EMPLOYEE_DESCRIPTION = 'ID do funcionário(a) que irá executar o serviço.'
-SERVICES_METADATA = metadata = {
+SERVICES_METADATA = {
     'example': [1]}
 SERVICES_DESCRIPTION = 'Lista de serviços do agendamento.'
 
@@ -34,9 +34,9 @@ class AppointmentSchema(Schema):
     date = fields.Str(required=True, metadata=DATE_METADATA,
                       description=DATE_DESCRIPTION)
     customer_id = fields.Int(
-        required=True, metadata=EMPLOYEE_METADATA, description=EMPLOYEE_DESCRIPTION)
-    employee_id = fields.Int(
         required=True, metadata=CUSTOMER_METADATA, description=CUSTOMER_DESCRIPTION)
+    employee_id = fields.Int(
+        required=True, metadata=EMPLOYEE_METADATA, description=EMPLOYEE_DESCRIPTION)
     services_ids = fields.List(
         fields.Int(),
         required=True,

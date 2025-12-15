@@ -4,7 +4,7 @@ Schema module for Employee entities.
 
 from marshmallow import Schema, fields, validate
 
-NAME_METADATA = metadata = {
+NAME_METADATA = {
     'example': 'Fulano de Tal'}
 NAME_DESCRIPTION = 'Nome do Funcionário(a)'
 EMAIL_METADATA = {
