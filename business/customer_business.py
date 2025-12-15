@@ -2,7 +2,6 @@
 Business module for Customer entities.
 """
 
-from datetime import datetime
 from business.base import get_or_404
 from database.models.customer import Customer
 from repositories.customer_repository import (
@@ -11,7 +10,6 @@ from repositories.customer_repository import (
     get_customer,
     update_customer,
 )
-from validations.base import BaseValidation
 from validations.customer_validation import CustomerValidation
 
 

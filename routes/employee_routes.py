@@ -67,7 +67,7 @@ def add_employee(employee_data):
             'enum': ['available', 'vacation', 'sick_leave', 'unavailable']
         },
         'required': False,
-        'description': 'Filtra serviços pelo status: available (disponíveis), '
+        'description': 'Filtra funcionários(as) pelo status: available (disponíveis), '
         'vacation (férias), sick_leave (licença médica) ou unavailable (indisponíveis)'
     }]
 )
@@ -103,7 +103,7 @@ def get_employees():
             'enum': ['available', 'vacation', 'sick_leave', 'unavailable']
         },
         'required': False,
-        'description': 'Filtra serviços pelo status: available (disponíveis), '
+        'description': 'Filtra funcrionários(as) pelo status: available (disponíveis), '
         'vacation (férias), sick_leave (licença médica) ou unavailable (indisponíveis)'
     }]
 )
