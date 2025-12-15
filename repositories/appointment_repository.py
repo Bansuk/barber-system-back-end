@@ -60,40 +60,52 @@ def get_appointment(appointment_id: int) -> Optional[Appointment]:
     return db.session.query(Appointment).filter_by(id=appointment_id).first()
 
 
-def get_customer_appointment(date: datetime, customer_id: int) -> Optional[Appointment]:
+def get_customer_appointment(date: datetime, customer_id: int, exclude_appointment_id: Optional[int] = None) -> Optional[Appointment]:
     """
     Retrieves a customer appointment by date.
 
     Args:
         date (datetime): The appointment date.
         customer_id (int): The customer's ID.
+        exclude_appointment_id (Optional[int]): Appointment ID to exclude from the search (for updates).
 
     Returns:
          Optional[Appointment]: The appointment found or None.
     """
 
-    return db.session.query(Appointment).filter(
+    query = db.session.query(Appointment).filter(
         Appointment.customer_id == customer_id,
         Appointment.date == date
-    ).first()
+    )
+    
+    if exclude_appointment_id is not None:
+        query = query.filter(Appointment.id != exclude_appointment_id)
+    
+    return query.first()
 
 
-def get_employee_appointment(date: datetime, employee_id: int) -> Optional[Appointment]:
+def get_employee_appointment(date: datetime, employee_id: int, exclude_appointment_id: Optional[int] = None) -> Optional[Appointment]:
     """
     Retrieves an employee appointment by date.
 
     Args:
         date (datetime): The appointment date.
         employee_id (int): The employee's ID.
+        exclude_appointment_id (Optional[int]): Appointment ID to exclude from the search (for updates).
 
     Returns:
          Optional[Appointment]: The appointment found or None.
     """
 
-    return db.session.query(Appointment).filter(
+    query = db.session.query(Appointment).filter(
         Appointment.employee_id == employee_id,
         Appointment.date == date
-    ).first()
+    )
+    
+    if exclude_appointment_id is not None:
+        query = query.filter(Appointment.id != exclude_appointment_id)
+    
+    return query.first()
 
 
 def delete_appointment(appointment: Appointment) -> bool:

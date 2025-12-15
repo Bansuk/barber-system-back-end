@@ -68,7 +68,8 @@ class AppointmentValidation:
     def _validate_date_available(
         date: datetime,
         employee_id: int,
-        customer_id: int
+        customer_id: int,
+        exclude_appointment_id: Optional[int] = None
     ) -> None:
         """
         Validate that the time slot is available for both customer and employee.
@@ -77,15 +78,16 @@ class AppointmentValidation:
             date (datetime): The appointment's date.
             employee_id (int): The employee's ID.
             customer_id (int): The customer's ID.
+            exclude_appointment_id (Optional[int]): Appointment ID to exclude from check (for updates).
 
         Raises:
             HTTPException: If the time slot is already booked (409).
         """
-        if get_customer_appointment(date, customer_id):
+        if get_customer_appointment(date, customer_id, exclude_appointment_id):
             BaseValidation.abort_with_error(
                 409, 'Customer already has an appointment at this time.', 'date')
 
-        if get_employee_appointment(date, employee_id):
+        if get_employee_appointment(date, employee_id, exclude_appointment_id):
             BaseValidation.abort_with_error(
                 409, 'Employee already has an appointment at this time.', 'date')
 
@@ -249,7 +251,8 @@ class AppointmentValidation:
         fields: dict,
         current_customer_id: int,
         current_employee_id: Optional[int] = None,
-        current_date: Optional[datetime] = None
+        current_date: Optional[datetime] = None,
+        appointment_id: Optional[int] = None
     ) -> dict:
         """
         Validate update payload and check constraints.
@@ -259,6 +262,7 @@ class AppointmentValidation:
             current_customer_id (int): ID of the customer (cannot be changed).
             current_employee_id (Optional[int]): Current employee ID (for availability check).
             current_date (Optional[datetime]): Current appointment date (for availability check).
+            appointment_id (Optional[int]): ID of the appointment being updated (to exclude from checks).
 
         Returns:
             dict: Cleaned fields with validated entities ready to apply:
@@ -290,12 +294,12 @@ class AppointmentValidation:
             AppointmentValidation._validate_date_range(date)
             AppointmentValidation._validate_business_hours(date)
             AppointmentValidation._validate_date_available(
-                date, employee_id, current_customer_id
+                date, employee_id, current_customer_id, appointment_id
             )
             result['date'] = date
         elif employee_id != current_employee_id and current_date:
             AppointmentValidation._validate_date_available(
-                current_date, employee_id, current_customer_id
+                current_date, employee_id, current_customer_id, appointment_id
             )
 
         return result

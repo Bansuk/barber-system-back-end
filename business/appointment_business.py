@@ -76,7 +76,8 @@ def update_appointment_by_id(appointment_id: int, **fields) -> Appointment:
         fields,
         current_customer_id=appointment.customer_id,
         current_employee_id=appointment.employee_id,
-        current_date=appointment.date
+        current_date=appointment.date,
+        appointment_id=appointment_id
     )
 
     return update_appointment(appointment, **validated)
