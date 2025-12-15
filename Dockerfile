@@ -26,6 +26,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     FLASK_APP=app.py \
     FLASK_RUN_HOST=0.0.0.0
 
+RUN apk add --no-cache wget
+
 COPY --from=builder /install /install
 
 RUN addgroup -g 1000 app && \

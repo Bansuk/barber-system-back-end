@@ -1,8 +1,20 @@
 services:
   app:
     build: .
-    container_name: barber-system
+    container_name: barber-system-backend
     ports:
       - "5000:5000"
+    volumes:
+      - ./:/app
+      - /install
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PRETTIFY_JSON_RESPONSE=1
+      - API_KEY=${API_KEY:-}
+      - URL=${URL:-https://apilayer.net/api/validate}
     env_file:
       - .env
+    command: flask run --host=0.0.0.0 --port=5000 --reload
